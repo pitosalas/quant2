@@ -1,27 +1,38 @@
 #!/usr/bin/env python3
-# test_qubit_grid.py — Tests for viz.qubit_grid.build_grid_figure
+# test_qubit_grid.py — Tests for viz.qubit_grid.build_grid_html
 # Author: Pito Salas and Claude Code
 # Open Source Under MIT license
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.figure
-import pytest
-
-from viz.qubit_grid import build_grid_figure
+from viz.qubit_grid import build_grid_html
 
 
-def test_build_grid_figure_returns_figure():
-    """build_grid_figure must return a matplotlib Figure."""
-    fig = build_grid_figure([None, 0, 1, None], 4)
-    assert isinstance(fig, matplotlib.figure.Figure)
-    matplotlib.pyplot.close(fig)
+def test_build_grid_html_returns_str():
+    """build_grid_html must return an HTML string."""
+    html = build_grid_html([None, 0, 1, None], 4)
+    assert isinstance(html, str)
+    assert "<div" in html
 
 
-def test_build_grid_figure_axis_count():
-    """Grid for n=4 must produce exactly 4 axes (1 row x 4 cols)."""
-    import matplotlib.pyplot as plt
-    fig = build_grid_figure([None, 0, 1, None], 4)
-    visible_axes = [ax for ax in fig.get_axes() if ax.get_visible()]
-    assert len(visible_axes) == 4
-    plt.close(fig)
+def test_build_grid_html_contains_all_cell_labels():
+    """Grid must include a label for each cell index."""
+    html = build_grid_html([0, 1, None], 3)
+    assert "experiment #1" in html
+    assert "experiment #2" in html
+    assert "experiment #3" in html
+
+
+def test_build_grid_html_outcome_labels():
+    """Measured cells show outcome digit; unmeasured cells show '?'."""
+    html = build_grid_html([0, 1, None], 3)
+    assert ">0<" in html
+    assert ">1<" in html
+    assert ">?<" in html
+
+
+def test_build_grid_html_colors():
+    """Each outcome maps to its expected color."""
+    html = build_grid_html([0, 1, None], 3)
+    assert "#2266cc" in html  # outcome 0 — blue
+    assert "#cc2222" in html  # outcome 1 — red
+    assert "#aaaaaa" in html  # unmeasured — gray
+    assert "#000" in html  # experiment label — full black

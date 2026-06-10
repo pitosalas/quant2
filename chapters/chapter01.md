@@ -6,9 +6,15 @@ So if I create the same Qbit 1000 times and read it over and over, I will get a 
 
 The simplest case is with alpha = and beta = in which case the qbit has a 50/50 chance of becoming a 1 or 0. 
 
-:visualize single-qubit 30
+#### Here we illustrate a series of experiments where we "read" a single qbit over and over again.
 
 :visualize qubit-grid 20
+
+
+
+#### If we were to do many more experiments you see that the count of those that resolve to "1" is about the same as those who resolve to 2.
+
+:visualize single-qubit 500
 
 Assume that we created a Qbit with these amplitudes, abd then collapsed it, how many zeros and how many ones would we get? 
 

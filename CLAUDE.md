@@ -4,8 +4,8 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 Read and follow all rules in the `.claude/` folder:
 - @.claude/how_to_be.md — working principles and conduct (apply every session)
-- @.claude/templates/process.md — development workflow and feature/task tracking rules
-- @.claude/templates/codereview.md — coding standards, style rules, and review checklist
+- @.claude/process.md — development workflow and feature/task tracking rules
+- @.claude/codereview.md — coding standards, style rules, and review checklist
 - `02-doc/current.md` — session handoff and current status
 - `02-doc/notes.md` — semi-permanent project notes
 

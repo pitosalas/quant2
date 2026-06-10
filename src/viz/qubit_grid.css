@@ -1,0 +1,30 @@
+.qg-grid {
+    display: grid;
+    gap: 6px;
+    padding: 4px;
+}
+
+.qg-cell {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 2px;
+    background: #fafafa;
+}
+
+.qg-label {
+    font-size: 9px;
+    color: #000;
+    line-height: 1.3;
+}
+
+.qg-icon {
+    display: block;
+    line-height: 1;
+}
+
+.qg-outcome {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 2px;
+}

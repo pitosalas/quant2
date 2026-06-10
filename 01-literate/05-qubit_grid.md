@@ -1,100 +1,117 @@
 ---
-version: "1.0"
+version: "2.0"
 generated: "2026-06-10"
 ---
 
-# qubit_grid — Animated Qubit Grid Visualization
+# qubit_grid — Animated Qubit Measurement Grid
 
 ## What It Does
 
-`qubit_grid.py` implements the `qubit-grid` visualization directive for the chapter renderer. It runs N independent qubit experiments — each starting in |0⟩, passing through a Hadamard gate, then collapsing on measurement — and shows the results as an animated grid. The viewer watches the grid fill cell by cell, each box flipping from "?" to "0" or "1" and changing color.
+`qubit_grid.py` renders a live, animated grid showing repeated single-qubit measurements. Each cell represents one experiment: apply the Hadamard gate to |0⟩, then measure. The grid fills left-to-right, one cell at a time, pausing briefly between measurements so the viewer can watch the random outcomes accumulate.
 
-This module sits at the visualization layer: it knows about Streamlit and matplotlib but nothing about chapter structure or simulation orchestration.
+The visualization is the central pedagogical artifact for Chapter 1: it makes the probabilistic nature of quantum measurement viscerally visible.
 
-## Grid Layout
+## Architecture: Separated Asset Files
 
-The grid uses a fixed column count (`COLS = 8`) so rows scale with N. Each cell occupies one matplotlib `Axes` subplot. Two lookup tables drive the rendering:
+The module deliberately separates concerns across four files:
+
+```
+qubit_grid.py      — Python logic: data, animation loop
+qubit_grid.css     — All visual styling
+qubit_grid.html    — Grid/cell HTML structure template
+images/qbit.svg    — Qubit icon (orbital/atom glyph)
+```
+
+Python loads assets at import time using `Path(__file__).parent`:
+
+```python
+_HERE = Path(__file__).parent
+_CSS = (_HERE / "qubit_grid.css").read_text()
+_TEMPLATE = (_HERE / "qubit_grid.html").read_text()
+_SVG_ICON = (_HERE / "../../images/qbit.svg").resolve().read_text()
+```
+
+This keeps CSS, HTML structure, and icons out of Python strings entirely — they live in their natural formats, editable with normal tooling.
+
+## Color and Label Encoding
+
+Three states map to distinct colors:
 
 ```python
 COLORS = {
-    "unmeasured": "#f0f0f0",
-    0: "#cce0ff",
-    1: "#ffcccc",
+    "unmeasured": "#aaaaaa",   # grey  — not yet run
+    0: "#2266cc",              # blue  — measured |0⟩
+    1: "#cc2222",              # red   — measured |1⟩
 }
-LABELS = {
-    None: "?",
-    0: "0",
-    1: "1",
-}
+LABELS = {None: "?", 0: "0", 1: "1"}
 ```
 
-Using `None` as the unmeasured sentinel keeps the `results` list naturally typed as `list[int | None]` without a separate "pending" enum.
+The SVG icon uses `fill="currentColor"`, so the CSS `color` property on its parent element tints the glyph automatically — no separate icon variants needed.
 
-## The Figure Builder
+## Cell Construction
 
-`build_grid_figure` is a pure matplotlib function — no Streamlit dependency. This makes it unit-testable:
+Each cell is built by `build_cell_html()`:
 
 ```python
-def build_grid_figure(results: list[int | None], n: int) -> matplotlib.figure.Figure:
-    rows = math.ceil(n / COLS)
-    fig, axes = plt.subplots(rows, COLS, figsize=(10, 1.2 * rows))
+def build_cell_html(idx: int, outcome: int | None) -> str:
+    color = COLORS[outcome] if outcome is not None else COLORS["unmeasured"]
+    label = LABELS[outcome]
+    svg = _SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
+    return (
+        f'<div class="qg-cell">'
+        f'<div class="qg-label">experiment #{idx + 1}</div>'
+        f'<span class="qg-icon" style="color:{color};">{svg}</span>'
+        f'<div class="qg-outcome" style="color:{color};">{label}</div>'
+        f'</div>'
+    )
 ```
 
-The `figsize` is calibrated so rows stay compact (1.2 height units per row vs. the 8-wide figure). The caller must close the returned figure to avoid memory leaks.
+The SVG size override (`1em` → `2em`) is applied inline because the icon file stores its canonical display size and the grid needs it larger. A future improvement would parameterize this in the CSS instead.
 
-Axes normalization handles the edge cases matplotlib creates:
+## Grid Assembly and Animation
+
+`build_grid_html()` assembles cells into the CSS grid template:
 
 ```python
-if rows == 1 and COLS == 1:
-    axes_flat = [axes]
-elif rows == 1:
-    axes_flat = list(axes)
-elif COLS == 1:
-    axes_flat = list(axes)
-else:
-    axes_flat = [ax for row in axes for ax in row]
+def build_grid_html(results: list[int | None], n: int) -> str:
+    cells = "".join(build_cell_html(i, results[i]) for i in range(n))
+    return _TEMPLATE.format(css=_CSS, cols=COLS, cells=cells)
 ```
 
-`plt.subplots` returns a 2D array, a 1D array, or a single Axes depending on shape — this block normalizes all cases to a flat list.
-
-Each cell draws a rounded box via `FancyBboxPatch` in axes-coordinate space, then overlays two text elements: a small gray experiment number at the top and a bold outcome character centered in the box. Cells beyond `n` are hidden with `ax.set_visible(False)`.
-
-## Animation Loop
-
-`render` drives the Streamlit animation using a single `st.empty()` placeholder:
+`render()` drives the animation via a single Streamlit placeholder that is rewritten each frame:
 
 ```python
 def render(args: list[str]) -> None:
     n = int(args[0]) if args else 16
     results: list[int | None] = [None] * n
     placeholder = st.empty()
-
     for i in range(n):
-        q = Qubit.zero().apply(H)
-        results[i] = q.measure()
-        fig = build_grid_figure(results, n)
-        placeholder.pyplot(fig)
-        plt.close(fig)
+        results[i] = Qubit.zero().apply(H).measure()
+        placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)
         time.sleep(0.07)
 ```
 
-Each step: create a fresh H|0⟩ qubit, measure it, update the results list, redraw the full figure into the same placeholder (replacing the previous frame), then close the figure. The 70 ms sleep keeps the animation visually smooth without being sluggish.
+`st.empty()` is key: replacing its content rerenders only that region, not the whole page. The 70ms sleep is fast enough to feel animated but slow enough for the eye to follow individual outcomes.
 
-`plt.close(fig)` after each `placeholder.pyplot` is essential — without it, matplotlib accumulates figures in memory for the full duration of the animation.
+## Data Flow
 
-## Registration
-
-The module self-registers at import time:
-
-```python
-registry.register("qubit-grid", render)
+```mermaid
+graph TD
+    A[render called] --> B[allocate results: all None]
+    B --> C[st.empty placeholder]
+    C --> D{for each qubit i}
+    D --> E[Qubit.zero apply H measure]
+    E --> F[results i = 0 or 1]
+    F --> G[build_grid_html]
+    G --> H[build_cell_html per cell]
+    H --> I[placeholder.markdown]
+    I --> J[sleep 70ms]
+    J --> D
 ```
 
-`chapter01.py` imports this module to trigger registration; the chapter renderer then calls `registry.render("qubit-grid", args)` when it encounters a `:visualize qubit-grid N` directive.
+## Possible Improvements
 
-## Observations for Improvement
-
-- **8 columns is hardcoded**: for small N (e.g. 4) the grid looks sparse. A `max(4, min(8, n))` column heuristic would scale better.
-- **Full redraw per frame**: rebuilding the entire figure every step is O(N) per step, making total work O(N²). For large N (>100), pre-allocating patches and updating only the new cell's color/text would be significantly faster.
-- **No pause after completion**: the final frame disappears if the page reruns. Calling `placeholder.pyplot(fig)` after the loop (without closing) would pin the final state.
-- **`build_grid_figure` docstring is multi-line**: per the style guide, this method is complex enough to warrant explanation — but the current docstring describes *what*, not *why*. The non-obvious choice (caller must close the figure) is worth keeping; the obvious part ("returns a Figure") can go.
+- **SVG size via CSS**: The `width="2em"` override is a string replacement hack. A cleaner approach is a CSS class that overrides the SVG's intrinsic size.
+- **Configurable columns**: `COLS = 8` is hardcoded. An `args` parameter would let chapter authors control layout.
+- **Speed control**: The 70ms sleep is hardcoded. Exposing it via `args` would allow slower demos or instant batch display.
+- **Shared color palette**: Colors are defined in Python and duplicated risk in CSS. CSS variables in `qubit_grid.css` could be the single source of truth.

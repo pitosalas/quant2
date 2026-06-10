@@ -26,7 +26,9 @@
       "Read(//Users/pitosalas/mydev/back/**)",
       "WebFetch(domain:docs.marimo.io)",
       "WebSearch",
-      "Bash(uv add *)"
+      "Bash(uv add *)",
+      "Read(//Users/pitosalas/mydev/j3/.claude/templates/**)",
+      "Read(//Users/pitosalas/mydev/j3/**)"
     ]
   }
 }

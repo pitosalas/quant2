@@ -3,12 +3,9 @@
 # Author: Pito Salas and Claude Code
 # Open Source Under MIT license
 
-import math
 import time
+from pathlib import Path
 
-import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import streamlit as st
 
 from quant2.qubit import Qubit
@@ -17,9 +14,9 @@ from viz import registry
 
 
 COLORS = {
-    "unmeasured": "#f0f0f0",
-    0: "#cce0ff",
-    1: "#ffcccc",
+    "unmeasured": "#aaaaaa",
+    0: "#2266cc",
+    1: "#cc2222",
 }
 LABELS = {
     None: "?",
@@ -28,83 +25,44 @@ LABELS = {
 }
 COLS = 8
 
+_HERE = Path(__file__).parent
+_CSS = (_HERE / "qubit_grid.css").read_text()
+_TEMPLATE = (_HERE / "qubit_grid.html").read_text()
+_SVG_ICON = (_HERE / "../../images/qbit.svg").resolve().read_text()
 
-def build_grid_figure(results: list[int | None], n: int) -> matplotlib.figure.Figure:
-    """Build a matplotlib Figure showing an n-cell qubit measurement grid.
 
-    results is a list of length n; each element is None (not yet measured), 0, or 1.
-    Returns a new Figure — caller is responsible for closing it.
+def build_cell_html(idx: int, outcome: int | None) -> str:
+    color = COLORS[outcome] if outcome is not None else COLORS["unmeasured"]
+    label = LABELS[outcome]
+    svg = _SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
+    return (
+        f'<div class="qg-cell">'
+        f'<div class="qg-label">experiment #{idx + 1}</div>'
+        f'<span class="qg-icon" style="color:{color};">{svg}</span>'
+        f'<div class="qg-outcome" style="color:{color};">{label}</div>'
+        f'</div>'
+    )
+
+
+def build_grid_html(results: list[int | None], n: int) -> str:
+    """Build HTML showing an n-cell qubit measurement grid.
+
+    results is length n; each element is None (unmeasured), 0, or 1.
+    Returns HTML string for st.markdown(unsafe_allow_html=True).
     """
-    rows = math.ceil(n / COLS)
-    fig, axes = plt.subplots(rows, COLS, figsize=(10, 1.2 * rows))
-
-    # Normalize axes to a flat list of length rows*COLS
-    if rows == 1 and COLS == 1:
-        axes_flat = [axes]
-    elif rows == 1:
-        axes_flat = list(axes)
-    elif COLS == 1:
-        axes_flat = list(axes)
-    else:
-        axes_flat = [ax for row in axes for ax in row]
-
-    for idx, ax in enumerate(axes_flat):
-        if idx < n:
-            outcome = results[idx]
-            fill_color = COLORS[outcome] if outcome is not None else COLORS["unmeasured"]
-            label_text = LABELS[outcome]
-
-            # Draw white box with gray border
-            rect = mpatches.FancyBboxPatch(
-                (0.05, 0.15), 0.90, 0.70,
-                boxstyle="square,pad=0",
-                linewidth=1.5,
-                edgecolor="#aaaaaa",
-                facecolor=fill_color,
-                transform=ax.transAxes,
-                clip_on=False,
-            )
-            ax.add_patch(rect)
-
-            ax.text(
-                0.5, 0.90,
-                f"#{idx + 1}",
-                transform=ax.transAxes,
-                ha="center", va="center",
-                fontsize=6, color="gray",
-            )
-
-            ax.text(
-                0.5, 0.50,
-                label_text,
-                transform=ax.transAxes,
-                ha="center", va="center",
-                fontsize=14, fontweight="bold",
-            )
-        else:
-            ax.set_visible(False)
-
-        ax.set_xticks([])
-        ax.set_yticks([])
-        for spine in ax.spines.values():
-            spine.set_visible(False)
-
-    fig.tight_layout()
-    return fig
+    cells = "".join(build_cell_html(i, results[i]) for i in range(n))
+    return _TEMPLATE.format(css=_CSS, cols=COLS, cells=cells)
 
 
 def render(args: list[str]) -> None:
-    """Animate n qubit measurements as a growing grid."""
+    """Animate n qubit measurements one at a time in the grid."""
     n = int(args[0]) if args else 16
     results: list[int | None] = [None] * n
     placeholder = st.empty()
 
     for i in range(n):
-        q = Qubit.zero().apply(H)
-        results[i] = q.measure()
-        fig = build_grid_figure(results, n)
-        placeholder.pyplot(fig)
-        plt.close(fig)
+        results[i] = Qubit.zero().apply(H).measure()
+        placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)
         time.sleep(0.07)
 
 
