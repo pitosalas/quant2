@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# viz.py — Matplotlib visualizations: Bloch sphere and measurement distribution charts
+# bloch.py — Bloch sphere and measurement distribution chart visualizations
 # Author: Pito Salas and Claude Code
 # Open Source Under MIT license
 
@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_bloch_sphere(qubit, title: str = "Bloch Sphere", ax=None, show: bool = True):
+    """Draw a Bloch sphere for the given qubit state."""
     theta, phi = qubit.bloch_angles()
     x = np.sin(theta) * np.cos(phi)
     y = np.sin(theta) * np.sin(phi)
@@ -30,13 +31,12 @@ def plot_bloch_sphere(qubit, title: str = "Bloch Sphere", ax=None, show: bool = 
         ([0, 1, 0], "|+i⟩"), ([0, -1, 0], "|-i⟩"),
         ([0, 0, 1], "|0⟩"), ([0, 0, -1], "|1⟩"),
     ]:
-        ax.plot([0, vec[0]*1.3], [0, vec[1]*1.3], [0, vec[2]*1.3],
+        ax.plot([0, vec[0] * 1.3], [0, vec[1] * 1.3], [0, vec[2] * 1.3],
                 "k--", linewidth=0.6, alpha=0.4)
-        ax.text(vec[0]*1.4, vec[1]*1.4, vec[2]*1.4, lbl,
+        ax.text(vec[0] * 1.4, vec[1] * 1.4, vec[2] * 1.4, lbl,
                 fontsize=9, ha="center", va="center", color="gray")
 
-    ax.quiver(0, 0, 0, x, y, z, color="#e03030", linewidth=2.5,
-              arrow_length_ratio=0.15)
+    ax.quiver(0, 0, 0, x, y, z, color="#e03030", linewidth=2.5, arrow_length_ratio=0.15)
     ax.scatter([x], [y], [z], color="#e03030", s=40, zorder=5)
 
     ax.set_xlim(-1.2, 1.2)
@@ -54,6 +54,7 @@ def plot_bloch_sphere(qubit, title: str = "Bloch Sphere", ax=None, show: bool = 
 def plot_measurement_distribution(
     counts: dict, title: str = "Measurement Distribution", ax=None, show: bool = True
 ):
+    """Draw a bar chart of measurement outcome probabilities."""
     standalone = ax is None
     if standalone:
         fig, ax = plt.subplots(figsize=(5, 4))
@@ -71,8 +72,15 @@ def plot_measurement_distribution(
     bars = ax.bar(labels, values, color=colors, edgecolor="white", linewidth=1.5, width=0.5)
 
     for bar, val in zip(bars, values):
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.01,
-                f"{val:.1%}", ha="center", va="bottom", fontsize=11, fontweight="bold")
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + 0.01,
+            f"{val:.1%}",
+            ha="center",
+            va="bottom",
+            fontsize=11,
+            fontweight="bold",
+        )
 
     ax.axhline(0.5, color="gray", linestyle="--", linewidth=1, alpha=0.6)
     ax.set_ylim(0, 1.15)

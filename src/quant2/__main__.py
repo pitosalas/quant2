@@ -3,11 +3,10 @@
 # Author: Pito Salas and Claude Code
 # Open Source Under MIT license
 
-import numpy as np
 from quant2.qubit import Qubit
 from quant2.gates import X, H, Z
-from quant2.simulate import run_simulation
-from quant2.viz import demo_dashboard
+from sim.runner import run_trials
+from viz.bloch import demo_dashboard
 
 
 def main():
@@ -22,7 +21,7 @@ def main():
 
     results = []
     for label, gates in experiments:
-        counts = run_simulation(gates, n_trials=1000, label=label.replace("\n", " — "))
+        counts = run_trials(gates, 1000)
         q = Qubit.zero()
         for g in gates:
             q = q.apply(g)

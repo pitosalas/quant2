@@ -6,5 +6,5 @@ So if I create the same Qbit 1000 times and read it over and over, I will get a 
 
 The simplest case is with alpha = and beta = in which case the qbit has a 50/50 chance of becoming a 1 or 0. 
 
-Assume that we created a Qbit with these amplitudes, abd then collapsed it, how many zeros and how many ones would we get?
+Assume that we created a Qbit with these amplitudes, abd then collapsed it, how many zeros and how many ones would we get? 
 

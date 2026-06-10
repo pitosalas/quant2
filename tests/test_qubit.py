@@ -120,15 +120,15 @@ def test_bloch_superposition():
 # T05 — Simulation runner
 
 def test_simulation_x_gate_all_ones():
-    from quant2.simulate import run_simulation
+    from sim.runner import run_trials
     np.random.seed(0)
-    counts = run_simulation([X], n_trials=200)
+    counts = run_trials([X], 200)
     assert counts[1] == 200
     assert counts[0] == 0
 
 def test_simulation_h_gate_roughly_half():
-    from quant2.simulate import run_simulation
+    from sim.runner import run_trials
     np.random.seed(0)
-    counts = run_simulation([H], n_trials=2000)
+    counts = run_trials([H], 2000)
     frac = counts[1] / 2000
     assert 0.46 < frac < 0.54, f"Expected ~0.5 but got {frac}"

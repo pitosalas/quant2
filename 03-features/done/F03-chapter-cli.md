@@ -5,7 +5,7 @@
 **Tasks File Created:** yes
 **Tests Written:** no
 **Test Passing:** no
-**Description**: Per-chapter CLI scripts that display chapter markdown via rich in the terminal, followed by an interactive matplotlib illustration of the concept described. Pattern: `src/chapterNN-slug.py`. Chapter text lives in `chapters/chapterNN.md`. No tests for the CLI scripts themselves (UI/display code); quantum model layer is tested separately in F01.
+**Description**: Per-chapter scripts that display chapter markdown and interactive illustrations. Pattern: `src/chapterNN-slug.py`. Chapter text lives in `chapters/chapterNN.md`. No tests for the CLI scripts themselves (UI/display code); quantum model layer is tested separately in F01.
 
 ## How to Demo
 **Setup**: `uv sync`
