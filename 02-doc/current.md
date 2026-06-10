@@ -1,20 +1,27 @@
 # Current Session Handoff
 
 **Date**: 2026-06-10
-**Status**: F01 (single qubit model) and F03 (chapter CLI) complete.
+**Status**: F04 (3-layer Streamlit), F05 (inline :visualize directives), F06 (qubit-grid animation) complete. F07/F08 defined.
 
 ## In Progress
 Nothing.
 
 ## Blocked
-Nothing.
+- Streamlit Cloud: main file path needs updating to `src/chapter01.py` in Streamlit dashboard settings.
 
 ## Completed This Session
-- F01: quant2 package — Qubit, gates (X/Y/Z/H/CNOT), measurement, simulate, viz. 32 tests passing.
-- F02: Marimo book framework — built then removed; moved to deferred.
-- F03: Chapter CLI pattern — `src/chapter01-qbits.py` renders `chapters/chapter01.md` via rich, interactive matplotlib histogram with θ slider.
+- F01: quant2 package — Qubit, gates (X/Y/Z/H/CNOT), measurement. Tests passing.
+- F02: Marimo book framework — deferred.
+- F03: Chapter CLI — `src/chapter01-qbits.py` renders chapter markdown via rich.
+- F04: 3-layer restructure (quant2/sim/viz) + Streamlit chapter renderer.
+- F05: Inline `:visualize` directive system — registry, chapter_renderer, single-qubit animation.
+- F06: `qubit-grid` visualization — 8-column grid, animated H|0⟩ measurements, 0.07s/step.
+
+## Defined, Not Started
+- F07: Two-qubit unentangled system — `TwoQubitState`, `run_trials_2qubit`, `two-qubit-grid` viz, chapter02.
+- F08: Two-qubit entangled system (Bell state) — `EntangledPair` 4-vec, `run_trials_entangled`, `entangled-grid` viz.
 
 ## Next
-1. Write more chapter content in `chapters/`
-2. Add chapter02 CLI (`src/chapter02-*.py`) following F03 pattern
-3. Define F04 for next concept (gates? multi-qubit? circuit?)
+1. Implement TF07 (two-qubit unentangled): `two_qubit.py`, `runner.py` extension, `two_qubit_grid.py`, `chapter02.md`, `chapter02.py`
+2. Then TF08 (entangled Bell state)
+3. Fix Streamlit Cloud main file path

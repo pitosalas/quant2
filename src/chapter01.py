@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import streamlit as st
 
 import viz.single_qubit_anim  # noqa: F401 — registers "single-qubit" on import
+import viz.qubit_grid  # noqa: F401 — registers "qubit-grid" on import
 from chapter_renderer import render_chapter
 
 CHAPTER_FILE = Path(__file__).parent.parent / "chapters" / "chapter01.md"

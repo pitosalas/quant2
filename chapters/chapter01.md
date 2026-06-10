@@ -8,5 +8,7 @@ The simplest case is with alpha = and beta = in which case the qbit has a 50/50 
 
 :visualize single-qubit 30
 
+:visualize qubit-grid 20
+
 Assume that we created a Qbit with these amplitudes, abd then collapsed it, how many zeros and how many ones would we get? 
 
