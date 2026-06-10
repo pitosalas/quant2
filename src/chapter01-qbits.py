@@ -21,14 +21,17 @@ def load_chapter() -> str:
 
 
 def run_trials(theta_deg: float, n: int) -> dict[int, int]:
-    theta = np.radians(theta_deg)
-    alpha = np.cos(theta / 2)
-    beta = np.sin(theta / 2)
+    alpha, beta = amplitudes(theta_deg)
     counts = {0: 0, 1: 0}
     for _ in range(n):
         q = Qubit(complex(alpha), complex(beta))
         counts[q.measure()] += 1
     return counts
+
+
+def amplitudes(theta_deg: float) -> tuple[float, float]:
+    theta = np.radians(theta_deg)
+    return np.cos(theta / 2), np.sin(theta / 2)
 
 
 def draw_histogram(ax, counts: dict[int, int], theta_deg: float):
@@ -41,9 +44,7 @@ def draw_histogram(ax, counts: dict[int, int], theta_deg: float):
     for bar, val in zip(bars, values):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.02,
                 f"{val:.1%}", ha="center", va="bottom", fontsize=13, fontweight="bold")
-    theta = np.radians(theta_deg)
-    alpha = np.cos(theta / 2)
-    beta = np.sin(theta / 2)
+    alpha, beta = amplitudes(theta_deg)
     ax.set_title(
         f"α = {alpha:.3f}   β = {beta:.3f}   ({N_TRIALS} measurements)",
         fontsize=11, pad=10
@@ -79,9 +80,9 @@ def main():
     fig.text(0.5, 0.01, "Drag θ to change qubit angle — watch α, β and probabilities shift",
              ha="center", fontsize=9, color="#555555")
 
-    def update(_val):
-        c = run_trials(slider.val, N_TRIALS)
-        draw_histogram(ax_hist, c, slider.val)
+    def update(val):
+        c = run_trials(val, N_TRIALS)
+        draw_histogram(ax_hist, c, val)
         fig.canvas.draw_idle()
 
     slider.on_changed(update)
