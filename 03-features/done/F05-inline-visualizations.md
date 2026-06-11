@@ -1,10 +1,10 @@
 # F05 — Named Inline Visualizations
 
 **Priority**: High
-**Done:** no
+**Done:** yes
 **Tasks File Created:** yes
-**Tests Written:** no
-**Test Passing:** no
+**Tests Written:** yes
+**Test Passing:** yes
 **Description**: Chapter markdown can embed named interactive visualizations inline using a `:visualize` directive. The Streamlit chapter renderer detects these lines and replaces them with live widgets.
 
 ## Directive syntax

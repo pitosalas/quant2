@@ -11,13 +11,14 @@ from viz.histogram import draw_histogram
 from viz import registry
 
 
-def render(args: list[str]) -> None:
+def render(args: list[str], placeholder=None) -> None:
     """Run N measurements of H|0⟩ and show the final histogram."""
     n = int(args[0]) if args else 20
     counts = {0: 0, 1: 0}
     for _ in range(n):
         counts[Qubit.zero().apply(H).measure()] += 1
-    st.pyplot(draw_histogram(counts, f"H|0⟩ — {n} measurements"))
+    target = placeholder if placeholder is not None else st
+    target.pyplot(draw_histogram(counts, f"H|0⟩ — {n} measurements"))
 
 
 registry.register("single-qubit", render)

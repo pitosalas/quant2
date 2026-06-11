@@ -35,4 +35,4 @@ def test_build_grid_html_colors():
     assert "#2266cc" in html  # outcome 0 — blue
     assert "#cc2222" in html  # outcome 1 — red
     assert "#aaaaaa" in html  # unmeasured — gray
-    assert "#000" in html  # experiment label — full black
+    assert "#333" in html  # experiment label color

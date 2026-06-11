@@ -1,10 +1,10 @@
 # F04 — Code Restructure + Streamlit Chapter Framework
 
 **Priority**: High
-**Done:** no
+**Done:** yes
 **Tasks File Created:** yes
-**Tests Written:** no
-**Test Passing:** no
+**Tests Written:** yes
+**Test Passing:** yes
 **Description**: Three related changes:
 
 ## Part A — Layer Separation

@@ -1,33 +1,31 @@
 # Current Session Handoff
 
 **Date**: 2026-06-10
-**Status**: F04–F06 complete. F07/F08 defined. Housekeeping: templates/ cleaned, codereview.md v3.2.
+**Status**: F01–F12 complete. All features and tasks in done/.
 
 ## In Progress
 Nothing.
 
 ## Blocked
-- Streamlit Cloud: main file path needs updating to `src/chapter01.py` in Streamlit dashboard settings.
+- Streamlit Cloud: main file path needs updating to `src/book.py` in Streamlit dashboard settings.
 
 ## Completed This Session
-- F01: quant2 package — Qubit, gates (X/Y/Z/H/CNOT), measurement. Tests passing.
-- F02: Marimo book framework — deferred.
-- F03: Chapter CLI — `src/chapter01-qbits.py` renders chapter markdown via rich.
-- F04: 3-layer restructure (quant2/sim/viz) + Streamlit chapter renderer.
-- F05: Inline `:visualize` directive system — registry, chapter_renderer, single-qubit animation.
-- F06: `qubit-grid` visualization — 8-column grid, animated H|0⟩ measurements, 0.07s/step.
-- SVG icon (images/qbit.svg) used instead of rectangles; CSS/HTML extracted to separate files.
-- codereview.md updated to v3.2: new "Web Assets" section — no inline CSS/JS/HTML in Python.
-- `.claude/templates/` cleaned: now contains only 5 bootstrapping templates (was duplicating live files).
-- CLAUDE.md fixed: references `.claude/process.md` and `.claude/codereview.md` (not templates/).
-- `notebook.py` and `notebook_styles.css` deleted (dead code, F02 deferred).
+- F07: Two-qubit unentangled grid — `TwoQubitState`, `measure_pair`, `run_trials_2qubit`, `two_qubit_grid.py`
+- F08: Two-qubit entangled (Bell state) — `EntangledPair`, `H_I`/`CNOT`, `entangled_grid.py`, `anticorrelated_grid.py`, `asymmetric_grid.py`, `two_qubit_bar.py`
+- F09: Quantum Gates chapter — `x_gate_grid.py`, X-gate always-1 grid
+- F10: More entanglement chapter — anticorrelated Bell state, asymmetric entanglement (Ry_I + CNOT)
+- F11: Grover's Search chapter — `grover_anim.py`, amplitude animation over 2 iterations
+- F12: Limits and Realities chapter — text-only, common misconceptions
+- Unified book: single `chapters/book.md`, `src/book.py` entry point
+- Per-viz replay: `@st.fragment` for isolated animation replay per visualization
+- CSS: Telex headers, Helvetica body at 1.3rem
+- Code review clean: fixed leading underscores, removed unused imports
+- Literate docs: generated 01-gates.md through X02-viz_wrappers.md
+- 99 tests passing
 
 ## Defined, Not Started
-- F07: Two-qubit unentangled system — `TwoQubitState`, `run_trials_2qubit`, `two-qubit-grid` viz, chapter02.
-- F08: Two-qubit entangled system (Bell state) — `EntangledPair` 4-vec, `run_trials_entangled`, `entangled-grid` viz.
+Nothing — all defined features complete.
 
 ## Next
-1. Move F04/F05/F06 feature and task files from notdone/ to done/
-2. Implement TF07 (two-qubit unentangled): `two_qubit.py`, `runner.py` extension, `two_qubit_grid.py`, `chapter02.md`, `chapter02.py`
-3. Then TF08 (entangled Bell state)
-4. Fix Streamlit Cloud main file path
+1. Fix Streamlit Cloud main file path (manual: update dashboard setting to `src/book.py`)
+2. Define new features as needed

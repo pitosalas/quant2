@@ -1,0 +1,54 @@
+.tqg-grid {
+    display: grid;
+    gap: 6px;
+    padding: 4px;
+}
+
+.tqg-cell {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 2px;
+    background: #fafafa;
+}
+
+.tqg-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.3;
+    margin-bottom: 4px;
+}
+
+.tqg-word {
+    display: flex;
+    align-items: stretch;
+    border: 1.5px solid #aaa;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 4px;
+}
+
+.tqg-bit {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px 2px;
+    background: #fff;
+}
+
+.tqg-bit + .tqg-bit {
+    border-left: 1.5px solid #aaa;
+}
+
+.tqg-icon {
+    display: block;
+    line-height: 1;
+}
+
+.tqg-bitval {
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 1px;
+}

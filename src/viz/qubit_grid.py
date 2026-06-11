@@ -54,11 +54,12 @@ def build_grid_html(results: list[int | None], n: int) -> str:
     return _TEMPLATE.format(css=_CSS, cols=COLS, cells=cells)
 
 
-def render(args: list[str]) -> None:
+def render(args: list[str], placeholder=None) -> None:
     """Animate n qubit measurements one at a time in the grid."""
     n = int(args[0]) if args else 16
     results: list[int | None] = [None] * n
-    placeholder = st.empty()
+    if placeholder is None:
+        placeholder = st.empty()
 
     for i in range(n):
         results[i] = Qubit.zero().apply(H).measure()

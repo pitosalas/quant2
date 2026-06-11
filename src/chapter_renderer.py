@@ -10,8 +10,18 @@ import streamlit as st
 from viz import registry
 
 
-def render_chapter(path: Path) -> None:
+def make_viz_fragment(name: str, args: list[str], key: str):
+    @st.fragment
+    def viz_fragment():
+        registry.render(name, args)
+        st.button("▶ Replay", key=key)
+    return viz_fragment
+
+
+def render_chapter(path: Path, viz_counter: list[int] | None = None) -> None:
     """Read a markdown file and render each block, dispatching :visualize directives."""
+    if viz_counter is None:
+        viz_counter = [0]
     text = path.read_text()
     blocks = [b.strip() for b in text.strip().split("\n\n") if b.strip()]
     for block in blocks:
@@ -20,6 +30,15 @@ def render_chapter(path: Path) -> None:
             words = first_line.split()
             name = words[1]
             args = words[2:]
-            registry.render(name, args)
+            key = f"replay_{name}_{viz_counter[0]}"
+            viz_counter[0] += 1
+            make_viz_fragment(name, args, key)()
         else:
             st.markdown(block)
+
+
+def render_book(paths: list[Path]) -> None:
+    """Render multiple chapter files in sequence as one continuous page."""
+    viz_counter = [0]
+    for path in paths:
+        render_chapter(path, viz_counter)

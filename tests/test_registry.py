@@ -11,7 +11,7 @@ def test_register_and_render_calls_fn():
     """register then render must call the fn with the correct args."""
     called_with = []
 
-    def stub(args):
+    def stub(args, placeholder=None):
         called_with.append(args)
 
     registry.register("test-stub", stub)
@@ -29,10 +29,10 @@ def test_register_overwrites_existing():
     """Registering the same name twice replaces the earlier fn."""
     results = []
 
-    def fn_first(args):
+    def fn_first(args, placeholder=None):
         results.append("first")
 
-    def fn_second(args):
+    def fn_second(args, placeholder=None):
         results.append("second")
 
     registry.register("overwrite-test", fn_first)

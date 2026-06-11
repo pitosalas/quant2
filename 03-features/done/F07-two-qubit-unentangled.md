@@ -1,10 +1,10 @@
 # F07 — Two-Qubit Unentangled System
 
 **Priority**: High
-**Done:** no
+**Done:** yes
 **Tasks File Created:** yes
-**Tests Written:** no
-**Test Passing:** no
+**Tests Written:** yes
+**Test Passing:** yes
 **Description**: Extend the simulator and chapter framework to represent a pair of qubits that are independent (not entangled). Each qubit is measured separately; outcomes combine into a 2-bit result (00, 01, 10, 11). Introduces the concept of a multi-qubit register without entanglement.
 
 ## Model layer

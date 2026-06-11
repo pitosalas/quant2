@@ -1,10 +1,10 @@
 # F06 — Qubit Grid Visualization
 
 **Priority**: High
-**Done:** no
+**Done:** yes
 **Tasks File Created:** yes
-**Tests Written:** no
-**Test Passing:** no
+**Tests Written:** yes
+**Test Passing:** yes
 **Description**: New `:visualize` named visualization — `qubit-grid` — shows N qubit experiments as a grid of boxes, animating left-to-right top-to-bottom. Each cell starts with "?" and flips to "0" or "1" when that experiment is measured.
 
 ## Directive

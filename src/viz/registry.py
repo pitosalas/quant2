@@ -11,12 +11,13 @@ def register(name: str, fn: callable) -> None:
     REGISTRY[name] = fn
 
 
-def render(name: str, args: list[str]) -> None:
+def render(name: str, args: list[str], placeholder=None) -> None:
     """Call the registered render function for name, passing args.
 
     Raises ValueError if name is not registered.
+    If placeholder is provided, passes it to the render function.
     """
     if name not in REGISTRY:
         registered = list(REGISTRY.keys())
         raise ValueError(f"Unknown visualization {name!r}. Registered: {registered}")
-    REGISTRY[name](args)
+    REGISTRY[name](args, placeholder)

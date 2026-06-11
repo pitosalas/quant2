@@ -1,16 +1,30 @@
 /* main.css — Global styles for quant2 Streamlit app */
 
-body {
-    font-family: "Source Sans Pro", sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Telex&display=swap');
 
 .block-container {
     max-width: 800px;
     padding-top: 2rem;
 }
 
-h1, h2, h3 {
+.stMarkdown p, .stMarkdown li, .stMarkdown td, .stMarkdown th {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 1.3rem;
+    line-height: 1.7;
+}
+
+.stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+    font-family: 'Telex', sans-serif;
     color: #1a1a2e;
+}
+
+.stButton > button {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    padding: 0.6rem 2.5rem !important;
+    background-color: #ffd700 !important;
+    color: #000 !important;
+    border: 2px solid #ccaa00 !important;
 }
 
 hr {

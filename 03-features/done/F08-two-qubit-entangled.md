@@ -1,10 +1,10 @@
 # F08 — Two-Qubit Entangled System (Bell State)
 
 **Priority**: High
-**Done:** no
+**Done:** yes
 **Tasks File Created:** yes
-**Tests Written:** no
-**Test Passing:** no
+**Tests Written:** yes
+**Test Passing:** yes
 **Description**: Extend the simulator to represent an entangled 2-qubit system using a 4-element state vector. Demonstrate the Bell state |Φ+⟩ = (|00⟩ + |11⟩)/√2 — created by H on q0 then CNOT. Show N experiments in the same grid format; reader observes only "00" and "11" ever appear (never "01" or "10"), which is the signature of entanglement.
 
 ## Model layer
