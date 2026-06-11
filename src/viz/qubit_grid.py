@@ -28,7 +28,7 @@ COLS = 8
 _HERE = Path(__file__).parent
 _CSS = (_HERE / "qubit_grid.css").read_text()
 _TEMPLATE = (_HERE / "qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../images/qbit.svg").resolve().read_text()
+_SVG_ICON = (_HERE / "../../content/images/qbit.svg").resolve().read_text()
 
 
 def build_cell_html(idx: int, outcome: int | None) -> str:

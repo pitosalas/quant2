@@ -94,7 +94,8 @@ def render(args: list[str], placeholder=None) -> None:
     """Animate Grover's algorithm amplitude evolution for 2-qubit system."""
     target = args[0] if args else "11"
     if placeholder is None:
-        placeholder = st.empty()
+        col, _ = st.columns([1, 1])
+        placeholder = col.empty()
 
     frames = build_grover_frames(target)
     for amplitudes, label in frames:

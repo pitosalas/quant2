@@ -1,6 +1,6 @@
 ---
-version: "1.0"
-generated: "2026-06-10"
+version: "1.1"
+generated: "2026-06-11"
 ---
 
 # book.py — Streamlit App Entry Point
@@ -26,8 +26,10 @@ import viz.grover_anim          # noqa: F401  → registers "grover-anim"
 The `# noqa: F401` comments suppress unused-import lint warnings — the imports
 are purely for their side-effects (registration).
 
+## Book File Location
+
 ```python
-BOOK_FILE = Path(__file__).parent.parent / "chapters" / "book.md"
+BOOK_FILE = Path(__file__).parent.parent / "content" / "book_dialog.md"
 
 def main():
     st.set_page_config(page_title="quant2", layout="centered")
@@ -36,6 +38,12 @@ def main():
 
 main()
 ```
+
+The book content lives at `content/book_dialog.md` — one level above `src/`,
+alongside other content assets such as images. This separates the authored
+Markdown content from the Python source tree. Previously this pointed to
+`chapters/book.md`; the move to `content/book_dialog.md` consolidates all
+authored content under a single `content/` directory.
 
 ## Notes
 

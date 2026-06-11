@@ -1,6 +1,6 @@
 ---
-version: "1.0"
-generated: "2026-06-10"
+version: "1.1"
+generated: "2026-06-11"
 ---
 
 # two_qubit_grid.py — Animated Two-Qubit Measurement Grid
@@ -28,8 +28,12 @@ Assets are loaded at module import time:
 _HERE = Path(__file__).parent
 _CSS = (_HERE / "two_qubit_grid.css").read_text()
 _TEMPLATE = (_HERE / "two_qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../images/qbit.svg").resolve().read_text()
+_SVG_ICON = (_HERE / "../../content/images/qbit.svg").resolve().read_text()
 ```
+
+The SVG icon is loaded from `content/images/qbit.svg` relative to the repo
+root — the same shared asset used by `qubit_grid.py`. The `resolve()` call
+normalises the traversal path at import time.
 
 Per `codereview.md`: no inline CSS or HTML strings in Python — they live in
 separate asset files.
@@ -61,8 +65,8 @@ distinct.
 
 ## SVG Qubit Icon
 
-The shared qubit icon from `images/qbit.svg` is inlined into each bit cell,
-resized to `1.5em`:
+The shared qubit icon from `content/images/qbit.svg` is inlined into each bit
+cell, resized to `1.5em`:
 
 ```python
 def bit_svg(bit: str | None) -> str:

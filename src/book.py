@@ -23,7 +23,7 @@ import viz.two_qubit_bar  # noqa: F401
 import viz.grover_anim  # noqa: F401
 from chapter_renderer import render_chapter
 
-BOOK_FILE = Path(__file__).parent.parent / "chapters" / "book.md"
+BOOK_FILE = Path(__file__).parent.parent / "content" / "book_dialog.md"
 
 
 def main():

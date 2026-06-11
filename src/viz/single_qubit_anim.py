@@ -18,7 +18,8 @@ def render(args: list[str], placeholder=None) -> None:
     for _ in range(n):
         counts[Qubit.zero().apply(H).measure()] += 1
     target = placeholder if placeholder is not None else st
-    target.pyplot(draw_histogram(counts, f"H|0⟩ — {n} measurements"))
+    col, _ = target.columns([1, 1])
+    col.pyplot(draw_histogram(counts, f"H|0⟩ — {n} measurements"))
 
 
 registry.register("single-qubit", render)

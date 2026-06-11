@@ -1,6 +1,6 @@
 ---
-version: "1.0"
-generated: "2026-06-10"
+version: "1.1"
+generated: "2026-06-11"
 ---
 
 # grover_anim.py — Grover's Algorithm Amplitude Animation
@@ -89,6 +89,30 @@ def draw_amplitude_frame(amplitudes: np.ndarray, label: str, target: str) -> Fig
 The y-axis runs from -1.2 to 1.2 because amplitudes (not probabilities) can be
 negative — the oracle flips the target to -0.5 before diffusion amplifies it.
 The reference line at 0.5 shows the initial equal-superposition level.
+
+## Half-Width Column Layout
+
+Like the other bar-chart visualizations, `render` places its animation in the
+left half of a two-column layout when no placeholder is supplied:
+
+```python
+def render(args: list[str], placeholder=None) -> None:
+    target = args[0] if args else "11"
+    if placeholder is None:
+        col, _ = st.columns([1, 1])
+        placeholder = col.empty()
+
+    frames = build_grover_frames(target)
+    for amplitudes, label in frames:
+        fig = draw_amplitude_frame(amplitudes, label, target)
+        placeholder.pyplot(fig)
+        plt.close(fig)
+        time.sleep(1.2)
+```
+
+The 1.2-second delay between frames is intentional — Grover frames carry more
+conceptual content than simple measurement outcomes, so the reader needs time
+to absorb each step before the next oracle-or-diffusion transformation appears.
 
 ## Algorithm Trace
 

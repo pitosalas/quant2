@@ -61,11 +61,17 @@ def animate_bar(run_one, title: str, n: int, placeholder=None) -> None:
 
 def render_unentangled(args: list[str], placeholder=None) -> None:
     n = int(args[0]) if args else 50
+    if placeholder is None:
+        col, _ = st.columns([1, 1])
+        placeholder = col.empty()
     animate_bar(lambda: run_trials_2qubit([H], [H], 1), "H|0⟩ ⊗ H|0⟩ (unentangled)", n, placeholder)
 
 
 def render_entangled(args: list[str], placeholder=None) -> None:
     n = int(args[0]) if args else 50
+    if placeholder is None:
+        col, _ = st.columns([1, 1])
+        placeholder = col.empty()
     animate_bar(lambda: run_trials_entangled([H_I, CNOT], 1), "Bell state |Φ+⟩ (entangled)", n, placeholder)
 
 

@@ -1,6 +1,6 @@
 ---
-version: "2.0"
-generated: "2026-06-10"
+version: "2.1"
+generated: "2026-06-11"
 ---
 
 # qubit_grid — Animated Qubit Measurement Grid
@@ -16,10 +16,10 @@ The visualization is the central pedagogical artifact for Chapter 1: it makes th
 The module deliberately separates concerns across four files:
 
 ```
-qubit_grid.py      — Python logic: data, animation loop
-qubit_grid.css     — All visual styling
-qubit_grid.html    — Grid/cell HTML structure template
-images/qbit.svg    — Qubit icon (orbital/atom glyph)
+qubit_grid.py           — Python logic: data, animation loop
+qubit_grid.css          — All visual styling
+qubit_grid.html         — Grid/cell HTML structure template
+content/images/qbit.svg — Qubit icon (orbital/atom glyph)
 ```
 
 Python loads assets at import time using `Path(__file__).parent`:
@@ -28,8 +28,10 @@ Python loads assets at import time using `Path(__file__).parent`:
 _HERE = Path(__file__).parent
 _CSS = (_HERE / "qubit_grid.css").read_text()
 _TEMPLATE = (_HERE / "qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../images/qbit.svg").resolve().read_text()
+_SVG_ICON = (_HERE / "../../content/images/qbit.svg").resolve().read_text()
 ```
+
+The SVG icon path resolves to `content/images/qbit.svg` relative to the repo root. This keeps the icon alongside other content assets rather than buried inside `src/viz/`. The `resolve()` call normalises the `../../` traversal to an absolute path at import time, catching missing-file errors immediately rather than at render time.
 
 This keeps CSS, HTML structure, and icons out of Python strings entirely — they live in their natural formats, editable with normal tooling.
 
@@ -81,10 +83,11 @@ def build_grid_html(results: list[int | None], n: int) -> str:
 `render()` drives the animation via a single Streamlit placeholder that is rewritten each frame:
 
 ```python
-def render(args: list[str]) -> None:
+def render(args: list[str], placeholder=None) -> None:
     n = int(args[0]) if args else 16
     results: list[int | None] = [None] * n
-    placeholder = st.empty()
+    if placeholder is None:
+        placeholder = st.empty()
     for i in range(n):
         results[i] = Qubit.zero().apply(H).measure()
         placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)

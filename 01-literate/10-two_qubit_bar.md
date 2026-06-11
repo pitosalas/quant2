@@ -1,6 +1,6 @@
 ---
-version: "1.0"
-generated: "2026-06-10"
+version: "1.1"
+generated: "2026-06-11"
 ---
 
 # two_qubit_bar.py — Animated Two-Qubit Bar Chart
@@ -55,19 +55,39 @@ systems without modification.
 The `plt.close(fig)` after each frame is essential — without it, Matplotlib
 accumulates open figure handles and memory leaks across frames.
 
-## Two Render Functions
+## Half-Width Column Layout
+
+Both render functions use a consistent half-width layout when no placeholder is
+provided by the caller:
 
 ```python
 def render_unentangled(args: list[str], placeholder=None) -> None:
     n = int(args[0]) if args else 50
+    if placeholder is None:
+        col, _ = st.columns([1, 1])
+        placeholder = col.empty()
     animate_bar(lambda: run_trials_2qubit([H], [H], 1),
                 "H|0⟩ ⊗ H|0⟩ (unentangled)", n, placeholder)
 
 def render_entangled(args: list[str], placeholder=None) -> None:
     n = int(args[0]) if args else 50
+    if placeholder is None:
+        col, _ = st.columns([1, 1])
+        placeholder = col.empty()
     animate_bar(lambda: run_trials_entangled([H_I, CNOT], 1),
                 "Bell state |Φ+⟩ (entangled)", n, placeholder)
 ```
+
+The `st.columns([1, 1])` call splits the full page width into two equal halves.
+The animation placeholder is placed in the left half, keeping the bar chart
+visually compact. This is the same half-width convention used by
+`single_qubit_anim` and `grover_anim`.
+
+When a caller supplies a `placeholder` directly (e.g. the chapter renderer
+places the animation inside a pre-allocated container), the `columns` split is
+skipped entirely — the caller controls the layout.
+
+## Two Render Functions
 
 The two functions are registered under different names:
 
