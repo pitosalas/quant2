@@ -32,14 +32,21 @@ _SVG_ICON = (_HERE / "../../content/images/qbit.svg").resolve().read_text()
 
 
 def build_cell_html(idx: int, outcome: int | None) -> str:
-    color = COLORS[outcome] if outcome is not None else COLORS["unmeasured"]
-    label = LABELS[outcome]
+    if outcome is None:
+        return (
+            f'<div class="qg-cell">'
+            f'<div class="qg-label">experiment #{idx + 1}</div>'
+            f'<span class="qg-icon"></span>'
+            f'<div class="qg-outcome"></div>'
+            f'</div>'
+        )
+    color = COLORS[outcome]
     svg = _SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
     return (
         f'<div class="qg-cell">'
         f'<div class="qg-label">experiment #{idx + 1}</div>'
         f'<span class="qg-icon" style="color:{color};">{svg}</span>'
-        f'<div class="qg-outcome" style="color:{color};">{label}</div>'
+        f'<div class="qg-outcome" style="color:{color};">{LABELS[outcome]}</div>'
         f'</div>'
     )
 
@@ -64,7 +71,7 @@ def render(args: list[str], placeholder=None) -> None:
     for i in range(n):
         results[i] = Qubit.zero().apply(H).measure()
         placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)
-        time.sleep(0.07)
+        time.sleep(0.3)
 
 
 registry.register("qubit-grid", render)

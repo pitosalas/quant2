@@ -18,11 +18,11 @@
 
 **Aristotle:** A freshly made qubit begins in the zero state, I read — alpha is one, beta is zero. So it always measures zero?
 
-**Plato:** Always. No randomness, no superposition. A deterministic thing, indistinguishable from a classical bit. The quantum character must be *created* by an operation.
+**Plato:** Always. No randomness, no superposition. A deterministic thing, indistinguishable from a classical bit. The quantum character must be *created* by an operation. That operation is called the **Hadamard gate**.
 
 **Aristotle:** What then is the **Hadamard gate**. Where does it fit in the story?
 
-**Plato:** Yes. It sets alpha and beta each equal to one over the square root of two, yielding exactly fifty percent probability for each outcome. Without it, no quantum behavior. The gate is what makes a qubit truly quantum.
+**Plato:** **Hadamard gate** sets alpha and beta each equal to one over the square root of two, yielding exactly fifty percent probability for each outcome. Without it, no quantum behavior. The gate is what makes a qubit truly quantum.
 
 #### Here we run 20 experiments: each creates a qubit, applies H, then measures it.
 
@@ -34,7 +34,7 @@ Each cell starts as "?" (superposition) and collapses to 0 or 1 when measured.
 
 :visualize single-qubit 100
 
-The histogram converges on 50% for each outcome — exactly what squaring each amplitude of one over the square root of two gives: probability 0.5.
+The histogram converges on 50% for each outcome — showing the effect of the **Hadamard gate**. The Qbit is put into a state where it has equal probabiliy og *collapsing* into a zero or 1. This is exactly what squaring each amplitude of one over the square root of two gives: probability 0.5.
 
 ---
 
@@ -57,6 +57,21 @@ The histogram converges on 50% for each outcome — exactly what squaring each a
 **Aristotle:** Show me the simplest gate.
 
 **Plato:** The **Pauli-X gate** — the quantum NOT. It flips the zero state to the one state, and the one state back to zero. No superposition, no randomness — purely deterministic.
+
+
+**Aristotle:** Can the *Pauli-X gate* be applied to any qubit, or does it need to be in a *collapsed* state?
+
+**Plato:** It can be applied to any qubit in any state — collapsed or in superposition. The X gate simply swaps the two amplitudes: whatever alpha was becomes beta, and vice versa. 
+
+A collapsed qubit is merely a special case: alpha one, beta zero, or alpha zero, beta one. The gate does not know how the qubit arrived at those amplitudes. 
+
+- Apply X to a collapsed zero and you get a definite one. 
+
+- Apply it to a collapsed one and you get a definite zero. 
+
+- Apply it mid-superposition and the amplitudes swap just the same. 
+
+The gate operates on whatever amplitudes are present — it does not ask their history.
 
 *Before running this experiment, predict: what will every cell show?*
 

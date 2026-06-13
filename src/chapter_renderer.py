@@ -13,8 +13,9 @@ from viz import registry
 def make_viz_fragment(name: str, args: list[str], key: str):
     @st.fragment
     def viz_fragment():
-        registry.render(name, args)
-        st.button("▶ Replay", key=key)
+        placeholder = st.empty()
+        if st.button("▶ Run Experiment", key=key):
+            registry.render(name, args, placeholder)
     return viz_fragment
 
 

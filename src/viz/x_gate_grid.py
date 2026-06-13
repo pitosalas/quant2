@@ -22,6 +22,11 @@ def render(args: list[str], placeholder=None) -> None:
         placeholder = st.empty()
 
     for i in range(n):
+        placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)
+        time.sleep(0.18)
+        results[i] = 0
+        placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)
+        time.sleep(0.18)
         results[i] = Qubit.zero().apply(X).measure()
         placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)
         time.sleep(0.07)

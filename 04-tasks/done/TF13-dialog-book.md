@@ -13,6 +13,7 @@ For Feature F13. Each task step includes a test where feasible.
 **Test**: `grep ":visualize" content/book_dialog.md` output matches expected list from `book.md`.
 
 ## T03 — Wire book_dialog.md into Streamlit renderer (optional)
-**Status**: not done
+**Status**: deferred
 **Description**: Add a toggle or selector in `src/book.py` to switch between `book.md` and `book_dialog.md`. Keep default as `book.md`.
+**Note**: Dialog version adopted as the default; toggle not needed. `src/book.py` now points directly to `book_dialog.md`.
 **Test**: Streamlit app loads dialog version without errors; all visualizations render.

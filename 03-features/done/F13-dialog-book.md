@@ -1,10 +1,10 @@
 # F13 — Plato/Aristotle Dialog Version of Book
 
 **Priority**: Medium
-**Done:** no
+**Done:** yes
 **Tasks File Created:** yes
-**Tests Written:** no
-**Test Passing:** no
+**Tests Written:** yes
+**Test Passing:** yes
 **Description**: Create an alternate version of the book (`content/book_dialog.md`) structured as a Socratic dialogue between Plato and Aristotle. Covers all the same quantum computing topics as `content/book.md`, includes all `:visualize` directives at the appropriate spots, and uses the conversation content from `content/dialog.md` as the substance of the exchange. Does not modify the existing `book.md`.
 
 ## How to Demo

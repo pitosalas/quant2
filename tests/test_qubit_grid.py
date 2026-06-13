@@ -22,17 +22,17 @@ def test_build_grid_html_contains_all_cell_labels():
 
 
 def test_build_grid_html_outcome_labels():
-    """Measured cells show outcome digit; unmeasured cells show '?'."""
+    """Measured cells show outcome digit; unmeasured cells show no label."""
     html = build_grid_html([0, 1, None], 3)
     assert ">0<" in html
     assert ">1<" in html
-    assert ">?<" in html
+    assert ">?<" not in html
 
 
 def test_build_grid_html_colors():
-    """Each outcome maps to its expected color."""
+    """Measured outcomes map to their expected colors; unmeasured cells have no color."""
     html = build_grid_html([0, 1, None], 3)
     assert "#2266cc" in html  # outcome 0 — blue
     assert "#cc2222" in html  # outcome 1 — red
-    assert "#aaaaaa" in html  # unmeasured — gray
+    assert "#aaaaaa" not in html  # unmeasured cells are empty, no gray
     assert "#333" in html  # experiment label color
