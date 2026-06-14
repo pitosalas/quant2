@@ -103,15 +103,7 @@ Contrast this with the Hadamard grid above — the H gate set alpha and beta eac
 
 **Plato:** That is exactly the right question. When two qubits are unentangled, each qubit still has its own alpha and beta. The joint state is simply their product — the four joint amplitudes are alpha-one times alpha-two, alpha-one times beta-two, beta-one times alpha-two, and beta-one times beta-two. You can still think of each qubit owning its own pair of amplitudes independently.
 
-**Aristotle:** So entanglement is when that breaks down?
-
-**Plato:** Precisely. Entanglement is exactly the condition where the joint state can no longer be factored back into separate per-qubit amplitudes. At that point, the amplitudes belong irreducibly to the **joint states** of the pair — zero-zero, zero-one, one-zero, one-one — each with its own amplitude that cannot be recovered from any individual qubit alone. Four amplitudes in total, all summing to one when squared.
-
-**Aristotle:** So the register as a whole is the thing with amplitudes when entangled, not the individual qubits?
-
-**Plato:** Correct. And that pattern generalises: three qubits give eight joint states, four qubits give sixteen. The number doubles with every qubit added. This exponential growth in the amplitude space is precisely where quantum computers get their power.
-
-We apply H to both. Each has a 50/50 chance of measuring zero or one, independently. When we measure both together, we get a two-bit string: 00, 01, 10, or 11. Since the qubits are independent, all four combinations are equally likely — about 25% each.
+We can apply the Hadamard gate to both qubits. Each qubit has a 50/50 chance of measuring zero or one, independently. When we measure both together, we get a two-bit string: 00, 01, 10, or 11. Since the qubits are independent, all four combinations are equally likely — about 25% each.
 
 **Aristotle:** And knowing what one measured tells us nothing about the other?
 
@@ -133,7 +125,19 @@ If we ran this same experiment, creating a quantum register with two qubits, man
 
 **Aristotle:** I have heard this very important idea called *entanglement* Explain entanglement to me. You said it was a correlation without classical equivalent.
 
-**Plato:** With two unentangled qubits, each has its own pair of amplitudes — independent. When you entangle them, you end up with a single shared state that cannot be factored into separate amplitudes. **Entanglement** is a quantum correlation. Once entangled, the qubits no longer have independent states — they share one joint state. Measuring one instantly fixes the outcome of the other, regardless of distance. Einstein called it spooky action at a distance.
+
+
+**Aristotle:** So entanglement is when that breaks down?
+
+**Plato:** Precisely. Entanglement is exactly the condition where the joint state can no longer be factored back into separate per-qubit amplitudes. At that point, the amplitudes belong irreducibly to the **joint states** of the pair — zero-zero, zero-one, one-zero, one-one — each with its own amplitude that cannot be recovered from any individual qubit alone. Four amplitudes in total, all summing to one when squared.
+
+**Aristotle:** So once entangled, register as a whole is the thing with amplitudes when entangled, not the individual qubits?
+
+**Plato:** Correct. And that pattern generalises: three qubits give eight joint states, four qubits give sixteen. The number doubles with every qubit added. This exponential growth in the amplitude space is precisely where quantum computers get their power.
+
+**Plato:** With two unentangled qubits, each has its own pair of amplitudes — independent. When you entangle them, you end up with a single shared state that cannot be factored into separate amplitudes. 
+
+**Entanglement** is a quantum correlation. Once entangled, the qubits no longer have independent states — they share one joint state. Measuring one instantly fixes the outcome of the other, regardless of distance. Einstein called it spooky action at a distance.
 
 ### The Bell State
 
