@@ -33,7 +33,9 @@
       "Bash(uv sync:*)",
       "Bash(git commit:*)",
       "Bash(uv run python:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)"
     ]
   }
 }

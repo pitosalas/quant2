@@ -99,6 +99,14 @@ Contrast this with the Hadamard grid above — the H gate set alpha and beta eac
 
 **Plato:** A quantum register holds more than one qubit. The simplest case is two **independent** — unentangled — qubits. Each has its own state, each collapses separately when measured.
 
+**Aristotle:** But wait — you said a qubit has two amplitudes, alpha and beta. When you put two qubits together, which qubit owns the amplitudes?
+
+**Plato:** That is exactly the right question, and the answer changes everything. For a single qubit, yes — the amplitudes alpha and beta belong to the qubit itself. But once you combine two qubits into a register, the amplitudes no longer belong to the individual qubits. They belong to the **joint states** of the pair. The register of two qubits has four possible states — zero-zero, zero-one, one-zero, one-one — and each of those four states has its own amplitude. Four amplitudes in total, all of which must sum to one when squared.
+
+**Aristotle:** So the register as a whole is the thing with amplitudes now, not the individual qubits?
+
+**Plato:** Precisely. With three qubits, eight amplitudes. With four qubits, sixteen. The number doubles with every qubit added. This is why quantum computers grow so powerful so quickly — the space of amplitudes they can manipulate grows exponentially with the number of qubits.
+
 We apply H to both. Each has a 50/50 chance of measuring zero or one, independently. When we measure both together, we get a two-bit string: 00, 01, 10, or 11. Since the qubits are independent, all four combinations are equally likely — about 25% each.
 
 **Aristotle:** And knowing what one measured tells us nothing about the other?
@@ -201,9 +209,19 @@ About 75% of cells show 00 (white), only 25% show 11 (purple). Yet 01 and 10 nev
 
 The trick is exploiting superposition and a technique called **amplitude amplification**.
 
+**Aristotle:** Can you make this concrete? Walk me through an actual search.
+
+**Plato:** Let us take a register of four qubits. Four qubits can represent sixteen values — zero through fifteen. Imagine a list of sixteen items, exactly one of which is the answer. Classically you would check them one by one — eight checks on average before finding it. Grover's algorithm finds it in roughly four steps: the square root of sixteen.
+
 ### Step 1 — Put everything in superposition
 
-**Plato:** Apply Hadamard to all qubits. Now the quantum system is in a superposition of all possible answers simultaneously — each with equal amplitude. With 2 qubits, that is four states: zero-zero, zero-one, one-zero, and one-one, each with amplitude 0.5.
+**Plato:** Apply Hadamard to all four qubits. Now the single register holds all sixteen states simultaneously — zero through fifteen — each with equal amplitude of one quarter. This is not sixteen experiments. It is one register, one moment, sixteen possibilities coexisting.
+
+**Aristotle:** And all sixteen are present at once, in the same register?
+
+**Plato:** Precisely. That is the whole point. A classical computer would have to check them one by one. This register already contains all of them.
+
+:visualize grover-start
 
 ### Step 2 — The Oracle
 
@@ -211,7 +229,15 @@ The trick is exploiting superposition and a technique called **amplitude amplifi
 
 **Plato:** The oracle is a quantum circuit built for your specific problem. It assumes you have some way to *recognize* the answer once you see it. It does not classically search; instead, it marks the correct answer by **flipping its amplitude from positive to negative** — multiplying that state's amplitude by −1 — while leaving all others unchanged. It does not tell you the answer. It merely tags it.
 
-After the oracle, three states have amplitude +0.5 and one — the target — has amplitude −0.5. The probabilities are still all equal, since probability equals amplitude squared. You cannot measure the answer yet.
+**Aristotle:** So after the oracle, the target is singled out — but invisibly?
+
+**Plato:** Exactly. In our example the target is state eleven. After the oracle, fifteen states still have amplitude positive one quarter, and state eleven has amplitude negative one quarter. The probabilities are unchanged — squaring removes the sign. You could not find the answer by measuring now. But the tag is there, waiting to be exploited.
+
+:visualize grover-oracle
+
+**Aristotle:** The bar for eleven dips below zero while all others remain the same. The chart looks almost identical to before — and yet something fundamental has changed.
+
+**Plato:** That is the oracle's power and its subtlety. Nothing visible to an outside observer. But the sign is now different, and the diffusion step will use that difference to amplify the target.
 
 ### Step 3 — Amplitude Amplification
 

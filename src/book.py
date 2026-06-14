@@ -21,6 +21,8 @@ import viz.anticorrelated_grid  # noqa: F401
 import viz.asymmetric_grid  # noqa: F401
 import viz.two_qubit_bar  # noqa: F401
 import viz.grover_anim  # noqa: F401
+import viz.grover_start  # noqa: F401
+import viz.grover_oracle  # noqa: F401
 from chapter_renderer import render_chapter
 
 BOOK_FILE = Path(__file__).parent.parent / "content" / "book_dialog.md"
