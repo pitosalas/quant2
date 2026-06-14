@@ -8,6 +8,7 @@
   - grover-start viz: done (equal superposition of 16 states)
   - grover-oracle viz: done (state 11 amplitude flipped negative)
   - Next: diffusion/amplification step visualization
+- Corrected explanation of joint amplitudes: unentangled qubits keep per-qubit alpha/beta; entanglement is when joint state can no longer be factored
 
 ## Blocked
 - Streamlit Cloud: main file path needs updating to `src/book.py` in Streamlit dashboard settings (manual step)

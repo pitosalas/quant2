@@ -101,11 +101,15 @@ Contrast this with the Hadamard grid above — the H gate set alpha and beta eac
 
 **Aristotle:** But wait — you said a qubit has two amplitudes, alpha and beta. When you put two qubits together, which qubit owns the amplitudes?
 
-**Plato:** That is exactly the right question, and the answer changes everything. For a single qubit, yes — the amplitudes alpha and beta belong to the qubit itself. But once you combine two qubits into a register, the amplitudes no longer belong to the individual qubits. They belong to the **joint states** of the pair. The register of two qubits has four possible states — zero-zero, zero-one, one-zero, one-one — and each of those four states has its own amplitude. Four amplitudes in total, all of which must sum to one when squared.
+**Plato:** That is exactly the right question. When two qubits are unentangled, each qubit still has its own alpha and beta. The joint state is simply their product — the four joint amplitudes are alpha-one times alpha-two, alpha-one times beta-two, beta-one times alpha-two, and beta-one times beta-two. You can still think of each qubit owning its own pair of amplitudes independently.
 
-**Aristotle:** So the register as a whole is the thing with amplitudes now, not the individual qubits?
+**Aristotle:** So entanglement is when that breaks down?
 
-**Plato:** Precisely. With three qubits, eight amplitudes. With four qubits, sixteen. The number doubles with every qubit added. This is why quantum computers grow so powerful so quickly — the space of amplitudes they can manipulate grows exponentially with the number of qubits.
+**Plato:** Precisely. Entanglement is exactly the condition where the joint state can no longer be factored back into separate per-qubit amplitudes. At that point, the amplitudes belong irreducibly to the **joint states** of the pair — zero-zero, zero-one, one-zero, one-one — each with its own amplitude that cannot be recovered from any individual qubit alone. Four amplitudes in total, all summing to one when squared.
+
+**Aristotle:** So the register as a whole is the thing with amplitudes when entangled, not the individual qubits?
+
+**Plato:** Correct. And that pattern generalises: three qubits give eight joint states, four qubits give sixteen. The number doubles with every qubit added. This exponential growth in the amplitude space is precisely where quantum computers get their power.
 
 We apply H to both. Each has a 50/50 chance of measuring zero or one, independently. When we measure both together, we get a two-bit string: 00, 01, 10, or 11. Since the qubits are independent, all four combinations are equally likely — about 25% each.
 
