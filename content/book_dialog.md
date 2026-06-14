@@ -34,7 +34,7 @@ Each cell starts as "?" (superposition) and collapses to 0 or 1 when measured.
 
 :visualize single-qubit 100
 
-The histogram converges on 50% for each outcome — showing the effect of the **Hadamard gate**. The Qbit is put into a state where it has equal probabiliy og *collapsing* into a zero or 1. This is exactly what squaring each amplitude of one over the square root of two gives: probability 0.5.
+The histogram converges on 50% for each outcome — showing the effect of the **Hadamard gate**. The qubit is put into a state where it has equal probability of *collapsing* into a zero or 1. This is exactly what squaring each amplitude of one over the square root of two gives: probability 0.5.
 
 ---
 
@@ -73,7 +73,7 @@ A collapsed qubit is merely a special case: alpha one, beta zero, or alpha zero,
 
 The gate operates on whatever amplitudes are present — it does not ask their history.
 
-*Before running this experiment, predict: what will every cell show?*
+*Our first experiment creates a qubit and then applies that X gate. We do this same thing, over and over again, in a series of experiments. As a new qubit starts in a zero state, what do you expect to see?*
 
 :visualize x-gate-grid 20
 
@@ -105,11 +105,13 @@ We apply H to both. Each has a 50/50 chance of measuring zero or one, independen
 
 **Plato:** Nothing at all. That changes completely when the qubits are *entangled*.
 
-### Experiment: two independent qubits
+### Experiment: register with two independent qubits
 
-Each cell shows the 2-bit result. White = 00, blue = 01, red = 10, purple = 11. The colors scatter randomly — no pattern between the two bits.
+We create a quantum register with two qubits. Each cell shows the 2-bit result. White = 00, blue = 01, red = 10, purple = 11. We do this multiple times to see different results.
 
 :visualize two-qubit-grid 20
+
+If we ran this same experiment, creating a quantum register with two qubits, many many times, lets see how often we see each possible outcome.
 
 :visualize two-qubit-bar 50
 
@@ -165,6 +167,19 @@ Only blue (01) and red (10) appear — never white or purple. The qubits are sti
 **Aristotle:** Is it possible that the second qubit's state is determined probabilistically rather than simply equal or opposite?
 
 **Plato:** Absolutely. You can create entangled states with more complex correlations — measuring qubit 1 as 0 might leave qubit 2 with a 70% chance of being 0 and 30% of being 1. Entanglement doesn't require a 50/50 split either. Replace the Hadamard with a rotation gate at a different angle, and one outcome becomes more likely than the other — while preserving the entanglement.
+
+**Aristotle:** Can you show me what outcomes are possible?
+
+**Plato:** Here is the full truth table for this state. We use a rotation gate at angle pi over three, followed by a CNOT. The joint outcomes are:
+
+| q0 | q1 | Probability |
+|----|----|-------------|
+| 0  | 0  | 75%         |
+| 0  | 1  | 0%          |
+| 1  | 0  | 0%          |
+| 1  | 1  | 25%         |
+
+The qubits always agree — 01 and 10 are impossible, just as before. But now 00 is three times more likely than 11. The entanglement is intact; only the balance has shifted.
 
 *Predict: will 00 or 11 be more common in the grid below?*
 

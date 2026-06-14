@@ -23,7 +23,7 @@ COLS = 4
 _HERE = Path(__file__).parent
 _CSS = (_HERE / "two_qubit_grid.css").read_text()
 _TEMPLATE = (_HERE / "two_qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../content/images/qbit.svg").resolve().read_text()
+_SVG_ICON = (_HERE / "../../content/images/qubit.svg").resolve().read_text()
 
 
 def bit_svg(bit: str | None) -> str:
@@ -79,7 +79,7 @@ def render(args: list[str], placeholder=None) -> None:
         single = run_trials_2qubit([H], [H], 1)
         outcome = next(k for k, v in single.items() if v > 0)
         results[i] = outcome
-        placeholder.markdown(build_two_qubit_grid_html(results, n), unsafe_allow_html=True)
+        placeholder.markdown(build_two_qubit_grid_html(results[:i+1], i+1), unsafe_allow_html=True)
         time.sleep(0.3)
 
 

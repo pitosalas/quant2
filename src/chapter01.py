@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# chapter01.py — Streamlit app for Chapter 1: Qbits
+# chapter01.py — Streamlit app for Chapter 1: Qubits
 # Author: Pito Salas and Claude Code
 # Open Source Under MIT license
 

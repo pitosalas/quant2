@@ -24,7 +24,7 @@ def render(args: list[str], placeholder=None) -> None:
         single = run_trials_entangled([H_I, CNOT], 1)
         outcome = next(k for k, v in single.items() if v > 0)
         results[i] = outcome
-        placeholder.markdown(build_two_qubit_grid_html(results, n), unsafe_allow_html=True)
+        placeholder.markdown(build_two_qubit_grid_html(results[:i+1], i+1), unsafe_allow_html=True)
         time.sleep(0.3)
 
 

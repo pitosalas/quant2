@@ -28,7 +28,7 @@ COLS = 8
 _HERE = Path(__file__).parent
 _CSS = (_HERE / "qubit_grid.css").read_text()
 _TEMPLATE = (_HERE / "qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../content/images/qbit.svg").resolve().read_text()
+_SVG_ICON = (_HERE / "../../content/images/qubit.svg").resolve().read_text()
 
 
 def build_cell_html(idx: int, outcome: int | None) -> str:
@@ -70,7 +70,7 @@ def render(args: list[str], placeholder=None) -> None:
 
     for i in range(n):
         results[i] = Qubit.zero().apply(H).measure()
-        placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)
+        placeholder.markdown(build_grid_html(results[:i+1], i+1), unsafe_allow_html=True)
         time.sleep(0.3)
 
 

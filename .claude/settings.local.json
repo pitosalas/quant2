@@ -28,7 +28,12 @@
       "WebSearch",
       "Bash(uv add *)",
       "Read(//Users/pitosalas/mydev/j3/.claude/templates/**)",
-      "Read(//Users/pitosalas/mydev/j3/**)"
+      "Read(//Users/pitosalas/mydev/j3/**)",
+      "Bash(ls:*)",
+      "Bash(uv sync:*)",
+      "Bash(git commit:*)",
+      "Bash(uv run python:*)",
+      "Bash(git mv:*)"
     ]
   }
 }
