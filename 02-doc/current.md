@@ -14,6 +14,7 @@
 - Streamlit Cloud: main file path needs updating to `src/book.py` in Streamlit dashboard settings (manual step)
 
 ## Completed This Session
+- Added lodestone/pebble-jar analogy for quantum parallelism: oracle acts like a lodestone passed over a jar of pebbles, finding the iron one without examining each
 - Added oracle explanation dialog: Aristotle asks what the oracle *actually* is; Plato explains it as a recognition circuit acting on all states simultaneously
 - Rewrote oracle explanation to avoid undefined terms (ancilla, phase kickback, linear) — plain language only
 - Added process gate to /start skill and feature template (both quant2 and j3) to enforce approval before acting

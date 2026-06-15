@@ -293,7 +293,11 @@ Notice: after the oracle, the orange bar flips below zero. After diffusion, it j
 
 **Aristotle:** But you speak of state eleven. The register is still in a quantum superposition of all sixteen states. How can the oracle act on eleven specifically?
 
-**Plato:** Because quantum gates act on the whole superposition at once. Think of the superposition as all sixteen possibilities present simultaneously. The oracle examines each one in parallel — not one after another, but all at the same moment. For fifteen of them it finds no match and passes through unchanged. For state eleven it finds the match and flips the sign. The register still holds all sixteen states after the oracle; only the mark on eleven has changed.
+**Plato:** Let me offer you an image. Suppose you have a large jar containing a great number of pebbles — one and only one is a piece of iron, all the rest stone. You need to find the iron one. Would you pick them up one by one, testing each in turn?
+
+**Aristotle:** Of course not. I would pass a lodestone over the jar. The iron reveals itself at once, without examining any of the others.
+
+**Plato:** Exactly so. The oracle is the lodestone. The superposition holds all sixteen states at once — like all the pebbles in the jar — and the oracle passes over them in a single motion. It does not trouble itself with the stones; it simply does not respond to them. Only the iron one — state eleven — is marked. The others are untouched.
 
 The oracle does not search. It recognizes. The burden of knowing what the answer looks like has been moved into the construction of the circuit itself. For simple cases — a database lookup, a pattern match — this circuit is straightforward to build. For harder problems, engineering the oracle requires its own ingenuity.
 
