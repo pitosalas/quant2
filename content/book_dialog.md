@@ -213,9 +213,7 @@ About 75% of cells show 00 (white), only 25% show 11 (purple). Yet 01 and 10 nev
 
 **Aristotle:** I have followed the account of gates and entanglement well enough. But a philosopher who stops at principles and never reaches their application has not finished his work. Give me an example of how you build these ideas into something useful. A search, perhaps.
 
-**Plato:** **Grover's algorithm**. You have a list of N items and one is marked — it is the answer. You do not know which one. Classically, finding it takes N divided by two steps on average — you check items one by one. Grover's algorithm finds it in roughly the square root of N steps.
-
-The trick is exploiting superposition and a technique called **amplitude amplification**.
+**Plato:** **Grover's algorithm** is one famous example. Here is how it works:  You have a list of N items and one is marked — it is the answer. You do not know which one. Classically, finding it takes N divided by two steps on average — you check items one by one. Grover's algorithm finds it in roughly the square root of N steps. The trick is exploiting superposition and a technique called **amplitude amplification**.
 
 **Aristotle:** Can you make this concrete? Walk me through an actual search.
 
@@ -223,7 +221,7 @@ The trick is exploiting superposition and a technique called **amplitude amplifi
 
 ### Step 1 — Put everything in superposition
 
-**Plato:** Apply Hadamard to all four qubits. Now the single register holds all sixteen states simultaneously — zero through fifteen — each with equal amplitude of one quarter. This is not sixteen experiments. It is one register, one moment, sixteen possibilities coexisting.
+**Plato:** Apply Hadamard to all four qubits. Now the single register holds all sixteen states simultaneously — zero through fifteen — each with equal amplitude of one quarter. This is not sixteen experiments. It is one register, one moment, sixteen possibilities coexisting. Like a die with sixteen sides.
 
 **Aristotle:** And all sixteen are present at once, in the same register? As a Form contains all its instances, yet is itself one thing?
 
@@ -288,6 +286,20 @@ Notice: after the oracle, the orange bar flips below zero. After diffusion, it j
 **Aristotle:** So the computation must be repeated many times to detect the likely correct answer?
 
 **Plato:** Exactly. That is a key limitation. You run the algorithm once and get a probabilistic answer. You repeat many times and take the most common result. This repetition overhead is real — it can eat into the quantum speedup for some problems.
+
+**Aristotle:** It seems that the *oracle* is doing a lot of magic. What is it *actually* in reality?
+
+**Plato:** A fair challenge. The oracle is a quantum circuit — a specific arrangement of gates — built to *recognize* the correct answer when presented with it. For our search of sixteen items, suppose item eleven is the answer. You construct a circuit that checks each state against the criterion for being the answer. When it encounters state eleven, it flips the amplitude to negative. For all other states, it does nothing. No measurement occurs; the superposition is preserved.
+
+**Aristotle:** But you speak of state eleven. The register is still in a quantum superposition of all sixteen states. How can the oracle act on eleven specifically?
+
+**Plato:** Because quantum gates act on the whole superposition at once. Think of the superposition as all sixteen possibilities present simultaneously. The oracle examines each one in parallel — not one after another, but all at the same moment. For fifteen of them it finds no match and passes through unchanged. For state eleven it finds the match and flips the sign. The register still holds all sixteen states after the oracle; only the mark on eleven has changed.
+
+The oracle does not search. It recognizes. The burden of knowing what the answer looks like has been moved into the construction of the circuit itself. For simple cases — a database lookup, a pattern match — this circuit is straightforward to build. For harder problems, engineering the oracle requires its own ingenuity.
+
+**Aristotle:** So the difficulty of the problem is not destroyed — it is relocated.
+
+**Plato:** Precisely. The oracle assumes what is hardest: that you can recognize the correct answer when you see it. Grover's algorithm then exploits that recognition to find the answer faster than brute force. The speedup is real. But the oracle is not magic — it is the problem's own logic, encoded in gates.
 
 ### Decoherence
 

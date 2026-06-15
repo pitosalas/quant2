@@ -14,6 +14,9 @@
 - Streamlit Cloud: main file path needs updating to `src/book.py` in Streamlit dashboard settings (manual step)
 
 ## Completed This Session
+- Added oracle explanation dialog: Aristotle asks what the oracle *actually* is; Plato explains it as a recognition circuit acting on all states simultaneously
+- Rewrote oracle explanation to avoid undefined terms (ancilla, phase kickback, linear) — plain language only
+- Added process gate to /start skill and feature template (both quant2 and j3) to enforce approval before acting
 - F14: Enhanced dialog style in book_dialog.md — more Aristotle/Plato character (essence questions, Form analogies, added missing Plato response in entanglement section)
 - Added grover-start visualization: 16-bar chart showing equal superposition after Hadamard
 - Added grover-oracle visualization: same chart with state 11 bar flipped negative (orange)
