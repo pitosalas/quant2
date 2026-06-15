@@ -10,13 +10,28 @@
 
 **Aristotle:** So measurement is not discovery but *creation*?
 
-**Plato:** Precisely. When we measure, the qubit **collapses** to either zero or one. The probability of each outcome is governed by two numbers — the ancients of this theory call them **amplitudes**: alpha and beta.
+**Plato:** Precisely. When we measure, the qubit **collapses** to either zero or one. Now when the qubit is first created, it is in a state that always collapses to zero. To illustrate we will repeat an experiment multiple times, creating a qubit and measuring it.
+
+#### Here we create 20 fresh qubits and measure each immediately
+
+Each qubit starts in an unknown state, but when measured it collapses to 0. Every time.
+
+:visualize zero-qubit-grid 20
+
+
+#### Images
+
+:static-viz zero-qubit-legend
+
+**Plato:** Mark these three states well. Yellow signifies a qubit not yet measured — it exists in superposition, uncommitted. Blue is a qubit that has collapsed to zero upon measurement. Red, one that has collapsed to one. In the experiments above, only yellow and blue appear — for a fresh qubit, without any gate applied, always collapses to zero.
+
+The probability of each outcome is governed by two numbers — the ancients of this theory call them **amplitudes**: alpha and beta. A freshly made qubit begins in the zero state, I read — alpha is one, beta is zero. 
 
 **Aristotle:** And what do these amplitudes determine?
 
 **Plato:** The probability of measuring zero equals the square of the absolute value of alpha, and of measuring one equals the square of the absolute value of beta. And they must sum to one — the qubit must land somewhere.
 
-**Aristotle:** A freshly made qubit begins in the zero state, I read — alpha is one, beta is zero. So it always measures zero?
+**Aristotle:** So a newly created qubit always measures zero? 
 
 **Plato:** Always. No randomness, no superposition. A deterministic thing, indistinguishable from a classical bit. The quantum character must be *created* by an operation. That operation is called the **Hadamard gate**.
 
@@ -26,7 +41,7 @@
 
 #### Here we run 20 experiments: each creates a qubit, applies H, then measures it.
 
-Each cell starts as "?" (superposition) and collapses to 0 or 1 when measured.
+As before, each qubit starts in an unknown state. After the H gate is applied, we see the measured state. 
 
 :visualize qubit-grid 20
 
@@ -36,9 +51,15 @@ Each cell starts as "?" (superposition) and collapses to 0 or 1 when measured.
 
 The histogram converges on 50% for each outcome — showing the effect of the **Hadamard gate**. The qubit is put into a state where it has equal probability of *collapsing* into a zero or 1. This is exactly what squaring each amplitude of one over the square root of two gives: probability 0.5.
 
+**Plato:** Our minds must be weary. Let us conclude today's discussion and continue another day.
+
+**Aristotle:** Agreed.
+
 ---
 
 ## Quantum Gates
+
+**Plato:** You have returned. Let us now turn from the nature of qubits to the gates that transform them.
 
 **Aristotle:** You spoke of gates. What are they, in their essence?
 
@@ -91,11 +112,23 @@ Contrast this with the Hadamard grid above — the H gate set alpha and beta eac
 
 **Plato:** Exactly. Run many gates to sculpt the amplitudes, then measure at the end.
 
+**Aristotle:** Then the gate is the sculptor and the qubit the clay — shaped before anyone looks.
+
+**Plato:** A fine image. Let us rest here. We have covered gates, their reversibility, their relation to measurement — enough for one sitting.
+
+**Aristotle:** I shall return with more questions. Until then, Plato.
+
+**Plato:** Until then.
+
 ---
 
 ## Two-Qubit Registers
 
-**Aristotle:** What of two qubits together — is the register merely doubled, or does something new emerge in kind?
+**Aristotle:** Plato, I have been turning over what you said about gates. A single qubit, shaped by operations, collapsing at measurement — I follow all that. But must qubits always stand alone? What happens when two are brought together?
+
+**Plato:** You have found the next question exactly. And the answer is not simple — sometimes two qubits are merely twice one, and sometimes something far stranger emerges. Let us begin with the simpler case.
+
+**Aristotle:** Is the register merely doubled, or does something new emerge in kind?
 
 **Plato:** A quantum register holds more than one qubit. The simplest case is two **independent** — unentangled — qubits. Each has its own state, each collapses separately when measured.
 
@@ -119,9 +152,19 @@ If we ran this same experiment, creating a quantum register with two qubits, man
 
 :visualize two-qubit-bar 50
 
+**Plato:** There is the independence, laid bare. Four outcomes, nearly equal. Nothing in one qubit tells you anything about the other.
+
+**Aristotle:** A clean result. And yet I sense you are holding something back — some deeper order lurking beneath.
+
+**Plato:** You sense rightly. We will speak of it next time. For now, let us rest.
+
+**Aristotle:** Until then.
+
 ---
 
 ## Entangled Qubits
+
+**Plato:** We have seen what two independent qubits can do. Now for something stranger — a correlation that has no classical equivalent.
 
 **Aristotle:** I have heard this very important idea called *entanglement*. Explain it to me. You said it was a correlation without classical equivalent.
 
@@ -207,9 +250,19 @@ About 75% of cells show 00 (white), only 25% show 11 (purple). Yet 01 and 10 nev
 
 **Plato:** Absolutely. Three, four, many qubits in increasingly complex ways. The more qubits entangled, the more complex the correlations — and that is where quantum computers get their real power. Information encoded across many entangled qubits simultaneously, in ways that have no classical equivalent.
 
+**Aristotle:** The more I consider it, the stranger it becomes. Two things, no longer separate, bound by a correlation that has no image in ordinary experience.
+
+**Plato:** That strangeness is the price of power. Let it settle in your mind. We will take up its applications next time.
+
+**Aristotle:** I shall hold the image of the Bell state — always together, always in agreement. Until we meet again.
+
+**Plato:** Until then.
+
 ---
 
 ## Grover's Search Algorithm
+
+**Plato:** We have laid the foundations — qubits, gates, entanglement. Let us now see what may be built upon them.
 
 **Aristotle:** I have followed the account of gates and entanglement well enough. But a philosopher who stops at principles and never reaches their application has not finished his work. Give me an example of how you build these ideas into something useful. A search, perhaps.
 
@@ -275,9 +328,19 @@ Notice: after the oracle, the orange bar flips below zero. After diffusion, it j
 
 **Plato:** The animation shows a second iteration. Watch: the oracle flips the target negative again, and diffusion pushes it back down. The algorithm *overshoots*. For 4 states, you must measure after exactly 1 iteration. For larger searches, the optimal number is approximately the square root of N.
 
+**Aristotle:** Then the algorithm, like any argument, must know when to stop. Overreach and you lose the very thing you sought.
+
+**Plato:** Well observed. There is a lesson there beyond quantum computing. Let us set it down for today.
+
+**Aristotle:** Agreed. My head is full of amplitudes and oracles. A rest is needed.
+
+**Plato:** Rest well. We will take up the limits and realities next time.
+
 ---
 
 ## Limits and Realities
+
+**Plato:** Every account of a powerful instrument must reckon honestly with its limits. Let us do so.
 
 **Aristotle:** Is there a way to directly examine the amplitudes?
 
@@ -329,7 +392,13 @@ Current superconducting qubits maintain coherence for roughly 100 microseconds t
 
 **Aristotle:** Then let us not mistake the power of the instrument for a power over all things.
 
-**Plato:** Well said.
+**Plato:** Well said. And on that note, I think we have reached the end of what can be said today — and perhaps for some time.
+
+**Aristotle:** This has been a worthy inquiry, Plato. I came with doubts and leave with questions — but questions of a better kind.
+
+**Plato:** That is the best any dialogue can offer. Go well, Aristotle.
+
+**Aristotle:** And you, Plato. Until we speak again.
 
 ---
 

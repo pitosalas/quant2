@@ -15,7 +15,7 @@ from viz import registry
 
 
 OUTCOMES = ["00", "01", "10", "11"]
-COLORS = ["#888888", "#4488ee", "#ee4444", "#9944cc"]
+COLORS = ["#2266cc", "#9944cc", "#cc7700", "#cc2222"]
 
 
 def draw_two_qubit_histogram(counts: dict[str, int], title: str) -> matplotlib.figure.Figure:

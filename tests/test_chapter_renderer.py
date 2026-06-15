@@ -84,3 +84,42 @@ def test_visualize_with_no_args(tmp_path):
 
     assert mock_render.call_args[0][0] == "myvis"
     assert mock_render.call_args[0][1] == []
+
+
+def test_parse_dialogs_count_and_titles():
+    """parse_dialogs must return one entry per ## section, excluding end markers."""
+    import sys
+    sys.path.insert(0, "src")
+    from book import parse_dialogs
+
+    text = "## Alpha\n\ncontent\n\n---\n\n## Beta\n\ncontent\n\n---\n\n*End of dialogue*"
+    dialogs = parse_dialogs(text)
+    assert len(dialogs) == 2
+    assert dialogs[0][0] == "Dialog 1: Alpha"
+    assert dialogs[1][0] == "Dialog 2: Beta"
+
+
+def test_parse_dialogs_filters_non_sections():
+    """parse_dialogs must skip sections not starting with ##."""
+    import sys
+    sys.path.insert(0, "src")
+    from book import parse_dialogs
+
+    text = "## Real\n\ncontent\n\n---\n\n*End of dialogue*"
+    dialogs = parse_dialogs(text)
+    assert len(dialogs) == 1
+    assert "Real" in dialogs[0][0]
+
+
+def test_parse_dialogs_real_book():
+    """parse_dialogs on the actual book_dialog.md must return 6 dialogs."""
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, "src")
+    from book import parse_dialogs
+
+    book_file = Path("content/book_dialog.md")
+    if not book_file.exists():
+        return  # skip if not in project root
+    dialogs = parse_dialogs(book_file.read_text())
+    assert len(dialogs) == 6

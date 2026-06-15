@@ -1,6 +1,6 @@
 ---
-version: "1.0"
-generated: "2026-06-10"
+version: "2.0"
+generated: "2026-06-15"
 ---
 
 # registry.py — Named Visualization Registry
@@ -8,69 +8,61 @@ generated: "2026-06-10"
 ## What It Does
 
 The registry is the glue between markdown chapter files and Python
-visualisation code. A chapter file contains inline directives like:
+visualization functions. A chapter file declares a viz by name
+(`:visualize qubit-grid 20`), and the registry resolves that name to
+a callable at render time.
 
-```
-:visualize qubit-grid 16
-```
+## Three Registries
 
-The renderer looks up `"qubit-grid"` in the registry and calls the associated
-Python function. This decouples chapter content from implementation — a new
-visualization is added in one place (its own module) and referenced by name
-in markdown.
-
-## Implementation
+As of F15/F16, three distinct dispatch tables exist:
 
 ```python
-REGISTRY: dict[str, callable] = {}
-
-def register(name: str, fn: callable) -> None:
-    REGISTRY[name] = fn
-
-def render(name: str, args: list[str], placeholder=None) -> None:
-    if name not in REGISTRY:
-        registered = list(REGISTRY.keys())
-        raise ValueError(f"Unknown visualization {name!r}. Registered: {registered}")
-    REGISTRY[name](args, placeholder)
+REGISTRY: dict[str, callable] = {}       # legacy blocking render
+STEP_REGISTRY: dict[str, callable] = {}  # step-based animated render
+STATIC_REGISTRY: dict[str, callable] = {} # always-visible, no button
 ```
 
-Three design choices worth noting:
+**REGISTRY** holds the original `render(args, placeholder)` signature —
+used as a fallback when a viz has no step renderer.
 
-1. **Module-level dict**: all viz modules are imported at startup in `book.py`,
-   causing each module to call `register()` at import time. No explicit
-   registration step is needed.
+**STEP_REGISTRY** holds `render_step(args, step, key, placeholder) -> bool` —
+the step-based non-blocking animation protocol. Returning `True` signals
+the animation is complete.
 
-2. **Fail loud on unknown names**: rather than silently skipping an unknown
-   directive, `render` raises `ValueError` with the list of registered names.
-   Typos in markdown fail immediately.
+**STATIC_REGISTRY** holds vizes that render immediately on page load with no
+"Run Experiment" button. Used for the legend and other always-visible content.
 
-3. **Optional placeholder**: the `placeholder` parameter is a Streamlit
-   `st.empty()` container for animations. Passing it through here keeps
-   render functions unaware of where they are placed on the page.
+## Dispatch Flow
 
-## Registration Pattern
+```mermaid
+flowchart TD
+    A[":visualize name args"] --> B{has_step_render?}
+    B -- yes --> C["render_step(name, args, step, key, ph)"]
+    C --> D{done?}
+    D -- no --> E[sleep 0.33s, step+1, rerun fragment]
+    D -- yes --> F[reset step to -1]
+    B -- no --> G["render(name, args, placeholder)"]
+    H[":static-viz name"] --> I["render_static(name, args)"]
+```
 
-Each viz module ends with:
+## Registration
+
+Each viz module calls `registry.register*` at module level so importing
+the module is sufficient to make it available:
 
 ```python
 registry.register("qubit-grid", render)
+registry.register_step("qubit-grid", render_step_qubit_grid)
+registry.register_static("zero-qubit-legend", render_legend)
 ```
 
-This mirrors plugin patterns — each module self-registers when imported.
-`book.py` drives all imports:
+`book.py` imports all viz modules (with `# noqa: F401`) so every viz
+is registered before any chapter text is rendered.
 
-```python
-import viz.qubit_grid        # registers "qubit-grid"
-import viz.two_qubit_grid    # registers "two-qubit-grid"
-import viz.grover_anim       # registers "grover-anim"
-# ...
-```
+## Observations
 
-## Possible Improvements
-
-- **Duplicate registration warning**: currently a second `register()` call
-  silently overwrites the first. A warning would catch accidental duplicate
-  names.
-- **Typed callable signature**: `callable` is untyped. A `Protocol` for
-  `(args: list[str], placeholder) -> None` would enable static type-checking
-  of render functions.
+- The three-registry pattern works but couples the chapter renderer to
+  knowing about all three. A single `Viz` dataclass with optional fields
+  would be cleaner and easier to extend.
+- `has_step_render` is a boolean predicate — the caller branches on it.
+  Consider a unified `render_viz(name, ...)` that dispatches internally.
