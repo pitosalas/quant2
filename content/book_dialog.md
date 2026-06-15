@@ -20,7 +20,7 @@
 
 **Plato:** Always. No randomness, no superposition. A deterministic thing, indistinguishable from a classical bit. The quantum character must be *created* by an operation. That operation is called the **Hadamard gate**.
 
-**Aristotle:** What then is the **Hadamard gate**. Where does it fit in the story?
+**Aristotle:** What then is the **Hadamard gate**, in its nature? Where does it fit in the account?
 
 **Plato:** **Hadamard gate** sets alpha and beta each equal to one over the square root of two, yielding exactly fifty percent probability for each outcome. Without it, no quantum behavior. The gate is what makes a qubit truly quantum.
 
@@ -54,7 +54,7 @@ The histogram converges on 50% for each outcome — showing the effect of the **
 
 ### The X Gate — Quantum NOT
 
-**Aristotle:** Show me the simplest gate.
+**Aristotle:** Then let us proceed, as always, from the simple to the complex. Show me the simplest gate.
 
 **Plato:** The **Pauli-X gate** — the quantum NOT. It flips the zero state to the one state, and the one state back to zero. No superposition, no randomness — purely deterministic.
 
@@ -95,7 +95,7 @@ Contrast this with the Hadamard grid above — the H gate set alpha and beta eac
 
 ## Two-Qubit Registers
 
-**Aristotle:** What of two qubits together?
+**Aristotle:** What of two qubits together — is the register merely doubled, or does something new emerge in kind?
 
 **Plato:** A quantum register holds more than one qubit. The simplest case is two **independent** — unentangled — qubits. Each has its own state, each collapses separately when measured.
 
@@ -123,9 +123,9 @@ If we ran this same experiment, creating a quantum register with two qubits, man
 
 ## Entangled Qubits
 
-**Aristotle:** I have heard this very important idea called *entanglement* Explain entanglement to me. You said it was a correlation without classical equivalent.
+**Aristotle:** I have heard this very important idea called *entanglement*. Explain it to me. You said it was a correlation without classical equivalent.
 
-
+**Plato:** When the qubits are unentangled, each retains its own separate amplitudes — they are, if you will, independent substances. The joint state is simply their product. You may speak of each qubit's nature separately, as you would of any two distinct things in the world.
 
 **Aristotle:** So entanglement is when that breaks down?
 
@@ -162,7 +162,7 @@ Watch the grid. Only white (00) and purple (11) cells appear. Blue (01) and red 
 
 :visualize entangled-bar 100
 
-**Aristotle:** Compare it to the unentangled grid. The distribution looks similar — roughly half 00, half 11.
+**Aristotle:** Compare it to the unentangled grid. The distribution looks similar — roughly half 00, half 11. And yet appearances deceive. One cannot, from the mere count of outcomes, discern the deeper order that binds them.
 
 **Plato:** The distribution looks similar, yes. But the *structure* is completely different. In the unentangled case, each bit decided independently. Here, they are locked together: q0 = 0 guarantees q1 = 0, always.
 
@@ -211,7 +211,7 @@ About 75% of cells show 00 (white), only 25% show 11 (purple). Yet 01 and 10 nev
 
 ## Grover's Search Algorithm
 
-**Aristotle:** Give me an example of how you build these ideas into something useful. A search, perhaps.
+**Aristotle:** I have followed the account of gates and entanglement well enough. But a philosopher who stops at principles and never reaches their application has not finished his work. Give me an example of how you build these ideas into something useful. A search, perhaps.
 
 **Plato:** **Grover's algorithm**. You have a list of N items and one is marked — it is the answer. You do not know which one. Classically, finding it takes N divided by two steps on average — you check items one by one. Grover's algorithm finds it in roughly the square root of N steps.
 
@@ -225,7 +225,7 @@ The trick is exploiting superposition and a technique called **amplitude amplifi
 
 **Plato:** Apply Hadamard to all four qubits. Now the single register holds all sixteen states simultaneously — zero through fifteen — each with equal amplitude of one quarter. This is not sixteen experiments. It is one register, one moment, sixteen possibilities coexisting.
 
-**Aristotle:** And all sixteen are present at once, in the same register?
+**Aristotle:** And all sixteen are present at once, in the same register? As a Form contains all its instances, yet is itself one thing?
 
 **Plato:** Precisely. That is the whole point. A classical computer would have to check them one by one. This register already contains all of them.
 
@@ -307,7 +307,7 @@ Current superconducting qubits maintain coherence for roughly 100 microseconds t
 
 **Plato:** Several. **Shor's algorithm** — factoring large numbers — finds factors with high probability in a single run, and carries an exponential speedup that threatens current encryption. **Quantum simulation** — modeling molecular or chemical behavior, where the system naturally explores correct outcomes — this is chemistry, materials science, drug discovery. **Grover's search**, after the square root of N iterations, as we have seen. And various **optimization problems** — finding good solutions in large spaces.
 
-**Aristotle:** And for everyday tasks?
+**Aristotle:** And for the tasks of ordinary life — sorting a list, reckoning figures, carrying a message?
 
 **Plato:** For sorting a list, running a calculation, sending a message — quantum computers offer no advantage. A classical machine will always be faster for those. Quantum computers are a specialized tool for a specific class of hard problems. That class includes some very important problems. That is why they matter.
 
