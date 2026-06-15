@@ -49,13 +49,14 @@ def build_legend_cell_html(color: str, symbol: str, label: str) -> str:
     )
 
 
-def build_legend_html() -> str:
+def build_legend_html(text: str = "") -> str:
     cells = (
         build_legend_cell_html(PENDING_COLOR, "?", "unmeasured")
         + build_legend_cell_html(COLORS[0], "0", "measured: 0")
         + build_legend_cell_html(COLORS[1], "1", "measured: 1")
     )
-    return _LEGEND_TEMPLATE.format(css=_CSS, cells=cells)
+    text_section = f'<div class="qg-legend-text">{text}</div>' if text else ""
+    return _LEGEND_TEMPLATE.format(css=_CSS, cells=cells, text_section=text_section)
 
 
 def render_step_zero(args: list[str], step: int, key: str, placeholder) -> bool:
@@ -63,7 +64,8 @@ def render_step_zero(args: list[str], step: int, key: str, placeholder) -> bool:
 
 
 def render_legend(args: list[str], placeholder=None) -> None:
-    st.markdown(build_legend_html(), unsafe_allow_html=True)
+    text = " ".join(args)
+    st.markdown(build_legend_html(text), unsafe_allow_html=True)
 
 
 def render(args: list[str], placeholder=None) -> None:

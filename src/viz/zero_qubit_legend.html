@@ -5,19 +5,35 @@
   border-radius: 6px;
   padding: 8px 20px 12px 20px;
   margin: 8px 0;
+  width: 100%;
+  box-sizing: border-box;
 }}
 .qg-legend-title {{
   font-size: 0.8em;
   font-weight: bold;
   color: #666;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}}
+.qg-legend-inner {{
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}}
+.qg-legend-text {{
+  flex: 1;
+  font-size: 0.9em;
+  line-height: 1.6;
+  padding-top: 4px;
 }}
 </style>
 <div class="qg-legend-box">
 <div class="qg-legend-title">Legend</div>
-<div class="qg-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
+<div class="qg-legend-inner">
+<div class="qg-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px; flex-shrink: 0;">
 {cells}
+</div>
+{text_section}
 </div>
 </div>

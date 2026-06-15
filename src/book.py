@@ -10,6 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 _CSS = (Path(__file__).parent / "styles" / "main.css").read_text()
 
@@ -46,6 +47,26 @@ def parse_dialogs(text: str) -> list[tuple[str, str]]:
     return dialogs
 
 
+def render_nav_button(target_label: str, button_text: str, key: str) -> None:
+    """Render a nav button that switches to the target tab when clicked."""
+    nav_key = f"{key}_target"
+    if st.session_state.get(nav_key):
+        del st.session_state[nav_key]
+        safe_label = target_label.replace('"', '\\"')
+        components.html(
+            f"""<script>
+            const tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+            for (const t of tabs) {{
+                if (t.textContent.trim() === "{safe_label}") {{ t.click(); break; }}
+            }}
+            </script>""",
+            height=0,
+        )
+    if st.button(button_text, key=key):
+        st.session_state[nav_key] = True
+        st.rerun()
+
+
 def main():
     st.set_page_config(page_title="The Quantum Computing Dialogs", layout="centered")
     st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
@@ -57,9 +78,13 @@ def main():
     tabs = st.tabs(tab_labels)
 
     viz_counter = [0]
-    for tab, (_, content) in zip(tabs, dialogs):
+    for i, (tab, (_, content)) in enumerate(zip(tabs, dialogs)):
         with tab:
+            if i > 0:
+                render_nav_button(tab_labels[i - 1], f"← {tab_labels[i - 1]}", key=f"nav_prev_{i}")
             render_chapter_text(content, viz_counter)
+            if i < len(dialogs) - 1:
+                render_nav_button(tab_labels[i + 1], f"{tab_labels[i + 1]} →", key=f"nav_next_{i}")
 
 
 main()

@@ -19,11 +19,7 @@ Each qubit starts in an unknown state, but when measured it collapses to 0. Ever
 :visualize zero-qubit-grid 20
 
 
-#### Images
-
-:static-viz zero-qubit-legend
-
-**Plato:** Mark these three states well. Yellow signifies a qubit not yet measured — it exists in superposition, uncommitted. Blue is a qubit that has collapsed to zero upon measurement. Red, one that has collapsed to one. In the experiments above, only yellow and blue appear — for a fresh qubit, without any gate applied, always collapses to zero.
+:static-viz zero-qubit-legend Yellow: qubit not yet measured — exists in superposition, uncommitted. Blue: collapsed to zero on measurement. Red: collapsed to one. Above, only yellow and blue appear — a fresh qubit without any gate always collapses to zero.
 
 The probability of each outcome is governed by two numbers — the ancients of this theory call them **amplitudes**: alpha and beta. A freshly made qubit begins in the zero state, I read — alpha is one, beta is zero. 
 

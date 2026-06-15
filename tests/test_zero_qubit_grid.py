@@ -44,3 +44,16 @@ def test_legend_contains_all_three_states():
     assert "#ccaa00" in html
     assert "#2266cc" in html
     assert "#cc2222" in html
+
+
+def test_legend_text_arg_appears_in_html():
+    """Text passed to build_legend_html must appear in the output."""
+    html = build_legend_html("Yellow means uncommitted.")
+    assert "Yellow means uncommitted." in html
+    assert "qg-legend-text" in html
+
+
+def test_legend_no_text_omits_text_div():
+    """With no text arg, the text div element must not appear in the output."""
+    html = build_legend_html()
+    assert '<div class="qg-legend-text">' not in html
