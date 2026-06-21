@@ -18,12 +18,16 @@ OUTCOMES = ["00", "01", "10", "11"]
 COLORS = ["#2266cc", "#9944cc", "#cc7700", "#cc2222"]
 
 
-def draw_two_qubit_histogram(counts: dict[str, int], title: str) -> matplotlib.figure.Figure:
+def draw_two_qubit_histogram(
+    counts: dict[str, int], title: str
+) -> matplotlib.figure.Figure:
     total = sum(counts.values())
     values = [counts[k] / total if total > 0 else 0.0 for k in OUTCOMES]
 
     fig, ax = plt.subplots(figsize=(5, 3.5))
-    bars = ax.bar(OUTCOMES, values, color=COLORS, edgecolor="white", linewidth=1.5, width=0.5)
+    bars = ax.bar(
+        OUTCOMES, values, color=COLORS, edgecolor="white", linewidth=1.5, width=0.5
+    )
 
     for bar, val in zip(bars, values):
         if val > 0:
@@ -53,7 +57,8 @@ def animate_bar(run_one, title: str, n: int, placeholder=None) -> None:
         single = run_one()
         outcome = next(k for k, v in single.items() if v > 0)
         counts[outcome] += 1
-        fig = draw_two_qubit_histogram(counts, f"{title} — {sum(counts.values())} trials")
+        n_trials = sum(counts.values())
+        fig = draw_two_qubit_histogram(counts, f"{title} — {n_trials} trials")
         placeholder.pyplot(fig)
         plt.close(fig)
         time.sleep(0.1)
@@ -64,7 +69,12 @@ def render_unentangled(args: list[str], placeholder=None) -> None:
     if placeholder is None:
         col, _ = st.columns([1, 1])
         placeholder = col.empty()
-    animate_bar(lambda: run_trials_2qubit([H], [H], 1), "H|0⟩ ⊗ H|0⟩ (unentangled)", n, placeholder)
+    animate_bar(
+        lambda: run_trials_2qubit([H], [H], 1),
+        "H|0⟩ ⊗ H|0⟩ (unentangled)",
+        n,
+        placeholder,
+    )
 
 
 def render_entangled(args: list[str], placeholder=None) -> None:
@@ -72,7 +82,12 @@ def render_entangled(args: list[str], placeholder=None) -> None:
     if placeholder is None:
         col, _ = st.columns([1, 1])
         placeholder = col.empty()
-    animate_bar(lambda: run_trials_entangled([H_I, CNOT], 1), "Bell state |Φ+⟩ (entangled)", n, placeholder)
+    animate_bar(
+        lambda: run_trials_entangled([H_I, CNOT], 1),
+        "Bell state |Φ+⟩ (entangled)",
+        n,
+        placeholder,
+    )
 
 
 registry.register("two-qubit-bar", render_unentangled)

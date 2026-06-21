@@ -4,6 +4,7 @@
 # Open Source Under MIT license
 
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 import streamlit as st
@@ -20,14 +21,16 @@ COLORS = {
 }
 COLS = 4
 
-_HERE = Path(__file__).parent
-_CSS = (_HERE / "two_qubit_grid.css").read_text()
-_TEMPLATE = (_HERE / "two_qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../content/images/qubit.svg").resolve().read_text()
+HERE = Path(__file__).parent
+CSS = (HERE / "two_qubit_grid.css").read_text()
+TEMPLATE = (HERE / "two_qubit_grid.html").read_text()
+SVG_ICON = (HERE / "../../content/images/qubit.svg").resolve().read_text()
 
 
 def bit_svg(bit: str | None) -> str:
-    sized = _SVG_ICON.replace('width="1em" height="1em"', 'width="1.5em" height="1.5em"')
+    sized = SVG_ICON.replace(
+        'width="1em" height="1em"', 'width="1.5em" height="1.5em"'
+    )
     color = COLORS[bit]
     return f'<span class="tqg-icon" style="color:{color};">{sized}</span>'
 
@@ -65,10 +68,12 @@ def build_two_qubit_cell_html(idx: int, outcome: str | None) -> str:
 def build_two_qubit_grid_html(results: list[str | None], n: int) -> str:
     """Build HTML for an n-cell two-qubit measurement grid."""
     cells = "".join(build_two_qubit_cell_html(i, results[i]) for i in range(n))
-    return _TEMPLATE.format(css=_CSS, cols=COLS, cells=cells)
+    return TEMPLATE.format(css=CSS, cols=COLS, cells=cells)
 
 
-def animate_two_qubit_grid(run_fn: callable, args: list[str], step: int, key: str, placeholder) -> bool:
+def animate_two_qubit_grid(
+    run_fn: Callable, args: list[str], step: int, key: str, placeholder
+) -> bool:
     """Shared step renderer for two-qubit grids. 2 frames/cell: ?? then result.
 
     Returns True when all n cells are complete.
@@ -87,18 +92,22 @@ def animate_two_qubit_grid(run_fn: callable, args: list[str], step: int, key: st
 
     frame = step % 2
     if frame == 0:
-        placeholder.markdown(build_two_qubit_grid_html(results[:cell + 1], cell + 1), unsafe_allow_html=True)
+        html = build_two_qubit_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
     else:
         single = run_fn()
         results[cell] = next(k for k, v in single.items() if v > 0)
         st.session_state[results_key] = results
-        placeholder.markdown(build_two_qubit_grid_html(results[:cell + 1], cell + 1), unsafe_allow_html=True)
+        html = build_two_qubit_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
 
     return False
 
 
 def render_step_two_qubit(args: list[str], step: int, key: str, placeholder) -> bool:
-    return animate_two_qubit_grid(lambda: run_trials_2qubit([H], [H], 1), args, step, key, placeholder)
+    return animate_two_qubit_grid(
+        lambda: run_trials_2qubit([H], [H], 1), args, step, key, placeholder
+    )
 
 
 def render(args: list[str], placeholder=None) -> None:
@@ -109,12 +118,14 @@ def render(args: list[str], placeholder=None) -> None:
         placeholder = st.empty()
 
     for i in range(n):
-        placeholder.markdown(build_two_qubit_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_two_qubit_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
         single = run_trials_2qubit([H], [H], 1)
         outcome = next(k for k, v in single.items() if v > 0)
         results[i] = outcome
-        placeholder.markdown(build_two_qubit_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_two_qubit_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
 
 

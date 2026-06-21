@@ -1,6 +1,6 @@
 ---
 version: "1.0"
-generated: "2026-06-10"
+generated: "2026-06-21"
 ---
 
 # Visualization Wrappers — entangled_grid, anticorrelated_grid, asymmetric_grid, x_gate_grid

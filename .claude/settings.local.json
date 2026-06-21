@@ -35,7 +35,9 @@
       "Bash(uv run python:*)",
       "Bash(git mv:*)",
       "Bash(git pull:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(git -C /Users/pitosalas/mydev/quant2 diff --name-only HEAD)"
     ]
   }
 }

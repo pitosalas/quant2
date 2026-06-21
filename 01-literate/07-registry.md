@@ -1,6 +1,6 @@
 ---
-version: "2.0"
-generated: "2026-06-15"
+version: "2.1"
+generated: "2026-06-21"
 ---
 
 # registry.py — Named Visualization Registry
@@ -17,9 +17,9 @@ a callable at render time.
 As of F15/F16, three distinct dispatch tables exist:
 
 ```python
-REGISTRY: dict[str, callable] = {}       # legacy blocking render
-STEP_REGISTRY: dict[str, callable] = {}  # step-based animated render
-STATIC_REGISTRY: dict[str, callable] = {} # always-visible, no button
+REGISTRY: dict[str, Callable] = {}       # legacy blocking render
+STEP_REGISTRY: dict[str, Callable] = {}  # step-based animated render
+STATIC_REGISTRY: dict[str, Callable] = {} # always-visible, no button
 ```
 
 **REGISTRY** holds the original `render(args, placeholder)` signature —

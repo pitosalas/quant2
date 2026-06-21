@@ -41,21 +41,32 @@ def build_grover_frames(target: str) -> list[tuple[np.ndarray, str]]:
 
     # Initialization: H⊗H puts all states in equal superposition
     state = np.full(GROVER_N, 0.5)
-    frames.append((state.copy(), "Step 1: Equal superposition\n(H gate on both qubits)"))
+    label = "Step 1: Equal superposition\n(H gate on both qubits)"
+    frames.append((state.copy(), label))
 
     for iteration in range(1, 3):
         # Oracle: flip target amplitude
         state = oracle @ state
-        frames.append((state.copy(), f"Step {(iteration-1)*2+2}: Oracle marks |{target}⟩\n(target amplitude flips negative)"))
+        oracle_label = (
+            f"Step {(iteration-1)*2+2}: Oracle marks |{target}⟩\n"
+            "(target amplitude flips negative)"
+        )
+        frames.append((state.copy(), oracle_label))
 
         # Diffusion: inversion about average
         state = DIFFUSION @ state
-        frames.append((state.copy(), f"Step {(iteration-1)*2+3}: Diffusion amplifies target\n(iteration {iteration})"))
+        diff_label = (
+            f"Step {(iteration-1)*2+3}: Diffusion amplifies target\n"
+            f"(iteration {iteration})"
+        )
+        frames.append((state.copy(), diff_label))
 
     return frames
 
 
-def draw_amplitude_frame(amplitudes: np.ndarray, label: str, target: str) -> matplotlib.figure.Figure:
+def draw_amplitude_frame(
+    amplitudes: np.ndarray, label: str, target: str
+) -> matplotlib.figure.Figure:
     """Draw signed amplitude bar chart for one Grover frame."""
     target_idx = STATE_INDEX[target]
     colors = []
@@ -66,16 +77,23 @@ def draw_amplitude_frame(amplitudes: np.ndarray, label: str, target: str) -> mat
             colors.append("#2266cc" if amp >= 0 else "#cc2222")
 
     fig, ax = plt.subplots(figsize=(6, 4))
-    bars = ax.bar(STATES, amplitudes, color=colors, edgecolor="white", linewidth=1.5, width=0.5)
+    bars = ax.bar(
+        STATES, amplitudes, color=colors, edgecolor="white", linewidth=1.5, width=0.5
+    )
 
     for bar, amp in zip(bars, amplitudes):
         if abs(amp) > 0.05:
             y = bar.get_height() + (0.04 if amp >= 0 else -0.08)
-            ax.text(bar.get_x() + bar.get_width() / 2, y,
-                    f"{amp:.2f}", ha="center", va="bottom", fontsize=11, fontweight="bold")
+            ax.text(
+                    bar.get_x() + bar.get_width() / 2, y,
+                    f"{amp:.2f}", ha="center", va="bottom",
+                    fontsize=11, fontweight="bold"
+                )
 
     ax.axhline(0, color="black", linewidth=1)
-    ax.axhline(0.5, color="gray", linestyle="--", linewidth=0.8, alpha=0.5, label="initial")
+    ax.axhline(
+        0.5, color="gray", linestyle="--", linewidth=0.8, alpha=0.5, label="initial"
+    )
     ax.set_ylim(-1.2, 1.2)
     ax.set_ylabel("Amplitude", fontsize=11)
     ax.set_title(label, fontsize=10, pad=8)

@@ -11,19 +11,19 @@ import streamlit as st
 from quant2.qubit import Qubit
 from viz import registry
 from viz.qubit_grid import (
-    _CSS, _TEMPLATE, _SVG_ICON, COLORS, COLS,
+    CSS, TEMPLATE, SVG_ICON, COLORS, COLS,
     PENDING_COLOR, build_pending_cell_html,
     animate_single_qubit_grid,
 )
 
-_LEGEND_TEMPLATE = (Path(__file__).parent / "zero_qubit_legend.html").read_text()
+LEGEND_TEMPLATE = (Path(__file__).parent / "zero_qubit_legend.html").read_text()
 
 
 def build_zero_cell_html(idx: int, outcome: int | None) -> str:
     if outcome is None:
         return build_pending_cell_html(idx)
     color = COLORS[outcome]
-    svg = _SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
+    svg = SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
     return (
         f'<div class="qg-cell">'
         f'<div class="qg-label">experiment #{idx + 1}</div>'
@@ -35,11 +35,11 @@ def build_zero_cell_html(idx: int, outcome: int | None) -> str:
 
 def build_zero_grid_html(results: list[int | None], n: int) -> str:
     cells = "".join(build_zero_cell_html(i, results[i]) for i in range(n))
-    return _TEMPLATE.format(css=_CSS, cols=COLS, cells=cells)
+    return TEMPLATE.format(css=CSS, cols=COLS, cells=cells)
 
 
 def build_legend_cell_html(color: str, symbol: str, label: str) -> str:
-    svg = _SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
+    svg = SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
     return (
         f'<div class="qg-cell">'
         f'<div class="qg-label">{label}</div>'
@@ -56,11 +56,13 @@ def build_legend_html(text: str = "") -> str:
         + build_legend_cell_html(COLORS[1], "1", "measured: 1")
     )
     text_section = f'<div class="qg-legend-text">{text}</div>' if text else ""
-    return _LEGEND_TEMPLATE.format(css=_CSS, cells=cells, text_section=text_section)
+    return LEGEND_TEMPLATE.format(css=CSS, cells=cells, text_section=text_section)
 
 
 def render_step_zero(args: list[str], step: int, key: str, placeholder) -> bool:
-    return animate_single_qubit_grid(lambda: Qubit.zero().measure(), args, step, key, placeholder)
+    return animate_single_qubit_grid(
+        lambda: Qubit.zero().measure(), args, step, key, placeholder
+    )
 
 
 def render_legend(args: list[str], placeholder=None) -> None:
@@ -76,10 +78,12 @@ def render(args: list[str], placeholder=None) -> None:
         placeholder = st.empty()
 
     for i in range(n):
-        placeholder.markdown(build_zero_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_zero_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
         results[i] = Qubit.zero().measure()
-        placeholder.markdown(build_zero_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_zero_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
 
 

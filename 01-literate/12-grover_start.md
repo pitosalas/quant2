@@ -1,6 +1,6 @@
 ---
 version: "1.0"
-generated: "2026-06-13"
+generated: "2026-06-21"
 ---
 
 # grover_start.py — Equal Superposition Starting State for Grover's Algorithm

@@ -1,7 +1,7 @@
 # Current Session Handoff
 
-**Date**: 2026-06-15
-**Status**: F01–F17 complete. 112 tests passing.
+**Date**: 2026-06-21
+**Status**: F01–F19 complete. 114 tests passing.
 
 ## In Progress
 - None
@@ -10,31 +10,23 @@
 - Streamlit Cloud: main file path needs updating to `src/book.py` in Streamlit dashboard settings (manual step)
 
 ## Completed This Session
-- F15: zero-qubit-grid visualization — fresh qubit shown in yellow ? then collapses to 0
-- F15: zero-qubit-legend static viz — bordered "Legend" box with all 3 states (yellow/?, blue/0, red/1)
-- F16: Non-blocking animations — step-based @st.fragment with st.rerun(scope="fragment"); all grids independent
-- F16: Shared animation helpers — animate_single_qubit_grid, animate_two_qubit_grid; all 5 two-qubit/single-qubit grids use them
-- F16: :static-viz directive for always-visible content (zero-qubit-legend)
-- F17: Dialog navigation — book split into 6 dialogs via st.tabs(); app title "The Quantum Computing Dialogs"
-- F17: Tab labels "Dialog 1: Qubits", "Dialog 2: Quantum Gates", etc.
-- Added proper greetings and goodbyes to all 6 dialogs following Dialog 1's example
-  - Dialog 2 (Quantum Gates): added goodbye; improved Aristotle line
-  - Dialog 3 (Two-Qubit Registers): rewrote greeting so Aristotle opens; added goodbye
-  - Dialog 4 (Entangled Qubits): added goodbye with Bell state image
-  - Dialog 5 (Grover's Search): added goodbye referencing overshooting
-  - Dialog 6 (Limits and Realities): added formal farewell between Aristotle and Plato
-- Legend box: wrapped in bordered rectangle labeled "Legend" (zero_qubit_legend.html template)
-- Color scheme consistent: yellow #ccaa00 (pending), blue #2266cc (0), red #cc2222 (1)
+- F19: Style guide compliance pass
+  - Extracted inline JS from `book.py` into `src/styles/nav_button.js`
+  - Moved `import time` to top of `entangled_grid.py`, `anticorrelated_grid.py`, `asymmetric_grid.py`
+  - Renamed `_CSS`, `_HERE`, `_TEMPLATE`, `_SVG_ICON`, `_LEGEND_TEMPLATE` (removed leading underscores) across 4 files
+  - Fixed all line lengths > 88 chars across all src files
+  - Replaced `callable` with `Callable` (from `collections.abc`) in `registry.py`, `qubit_grid.py`, `two_qubit_grid.py`
+  - Replaced silent float renormalization in `qubit.py` with validate-then-normalize pattern
+  - Replaced `print()` with `logging` in `__main__.py`
 
 ## Completed Previous Sessions
-- F07–F14: all quantum chapters, Grover's oracle/start vizs, dialog style
+- F15–F18: zero-qubit-grid, non-blocking animations, dialog navigation, prev/next nav buttons
+- F07–F14: all quantum chapters, Grover’s oracle/start vizs, dialog style
 - grover-start viz: equal superposition of 16 states
 - grover-oracle viz: state 11 amplitude flipped negative (orange bar)
-- Oracle explanation dialog: lodestone/pebble-jar analogy
-- Literate docs: 01-gates.md through 13-grover_oracle.md
 
 ## Defined, Not Started
-- Diffusion step visualization for 4-qubit Grover's example (grover-diffusion)
+- Diffusion step visualization for 4-qubit Grover’s example (grover-diffusion)
 
 ## Next
 1. Build grover-diffusion visualization showing amplitude amplification after one iteration

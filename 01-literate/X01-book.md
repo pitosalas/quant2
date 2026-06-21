@@ -1,203 +1,172 @@
 ---
-version: "1.1"
-generated: "2026-06-13"
+version: "2.0"
+generated: "2026-06-21"
 ---
 
 # book.py — The Entry Point of a Living Quantum Textbook
 
 ## Introduction
 
-`book.py` is the top-level Streamlit application for `quant2`, an interactive
-quantum computing textbook. It does very little on its own — and that is by
-design. Its job is to assemble the pieces: load the stylesheet, trigger
-registration of all visualization modules, point at the book's content file,
-and hand control to the chapter renderer. The entire file is fewer than thirty
-lines, yet it orchestrates every component in the system.
+`book.py` is the top-level Streamlit application for `quant2`. It orchestrates
+every other component: loads stylesheets and a JS helper, triggers registration
+of all visualization modules, reads the book's content, splits it into six
+tabbed dialogs, and wires up previous/next navigation buttons between them.
 
-The pedagogical premise of `quant2` is that explanatory prose and runnable
-quantum simulations should live side by side, as in the best tradition of
-literate programming. A Plato-and-Aristotle dialog inhabits the same markdown
-file as `:visualize` directives that launch live experiments. `book.py` is the
-shell that makes that possible.
+The pedagogical structure is a Socratic dialog between Aristotle and Plato,
+split across six chapters ("dialogs"). `book.py` renders those as Streamlit
+tabs, with each tab containing prose and live quantum experiments side by side.
 
 ---
 
-## Path Setup and Imports
+## Path Setup and Static Asset Loading
 
-The file begins by inserting its own directory onto `sys.path`. This is a
-deliberate concession to Streamlit's execution model, which does not always run
-the script from a predictable working directory.
-
-```python
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent))
-```
-
-This single line makes all sibling modules — `chapter_renderer`, the `viz`
-package, and `styles` — importable by name, regardless of how Streamlit
-launched the process. It is a pragmatic workaround rather than a packaging
-solution; the tradeoff is simplicity over cleanliness.
-
-With the path prepared, Streamlit itself is imported:
+The file begins with a path fix for Streamlit's execution model, followed by
+loading two static assets — a CSS stylesheet and a JS navigation helper:
 
 ```python
-import streamlit as st
+CSS = (Path(__file__).parent / "styles" / "main.css").read_text()
+NAV_JS = (Path(__file__).parent / "styles" / "nav_button.js").read_text()
 ```
 
----
+Both assets follow the prescribed pattern: loaded via `Path(__file__).parent`,
+stored as module-level constants without leading underscores (per style guide).
+Reading them eagerly at import time avoids repeated disk I/O per Streamlit
+rerun, and fails fast if a file is missing.
 
-## Loading the Stylesheet at Import Time
-
-The CSS file is read once, at module load, before any Streamlit rendering occurs:
-
-```python
-_CSS = (Path(__file__).parent / "styles" / "main.css").read_text()
-```
-
-Using `Path(__file__).parent` anchors the lookup to the source file's location,
-making the path robust to working-directory variation. The leading underscore on
-`_CSS` signals that this is a module-level constant not intended for external
-use. Reading the CSS eagerly avoids repeated disk access during rendering and
-keeps the `main()` function focused on Streamlit calls rather than file I/O.
-
-The tradeoff: if `main.css` is missing, the app crashes at import time rather
-than at render time. For a teaching app served in a controlled environment,
-that fail-fast behavior is acceptable and even desirable.
+The JS file (`nav_button.js`) contains the logic for clicking a Streamlit tab
+programmatically. It uses a `NAV_TARGET_LABEL` placeholder that Python replaces
+at render time with the actual tab label string. This keeps all JavaScript in
+`.js` files and out of Python source.
 
 ---
 
 ## Registering Visualizations via Side-Effecting Imports
 
-The most unusual section of the file is a sequence of imports that appear to do
-nothing:
+A sequence of imports trigger visualization registration as a side effect:
 
 ```python
 import viz.single_qubit_anim  # noqa: F401
-import viz.qubit_grid  # noqa: F401
-import viz.x_gate_grid  # noqa: F401
-import viz.two_qubit_grid  # noqa: F401
-import viz.entangled_grid  # noqa: F401
-import viz.anticorrelated_grid  # noqa: F401
-import viz.asymmetric_grid  # noqa: F401
-import viz.two_qubit_bar  # noqa: F401
-import viz.grover_anim  # noqa: F401
-import viz.grover_start  # noqa: F401
-import viz.grover_oracle  # noqa: F401
+import viz.qubit_grid          # noqa: F401
+# ... (11 modules total)
 ```
 
-Each `viz.*` module, when imported, calls `viz.registry.register(name, fn)` to
-enroll its render function under a string name. That name is the same token
-that appears in the book's `:visualize` directives. The `chapter_renderer`
-later looks names up in this registry and dispatches to the corresponding
-function.
-
-This pattern — import-for-side-effect — is a deliberate architectural choice.
-It keeps each visualization self-contained: the module owns its own name, its
-own render logic, and its own registration call. `book.py` does not need to
-know anything about any individual visualization; it just needs to ensure the
-modules have been loaded. The `# noqa: F401` comments suppress linter warnings
-about "imported but unused" symbols, which would otherwise fire because no
-name from these imports is referenced directly.
-
-The cost of this pattern is opacity. A reader scanning `book.py` cannot tell
-from this file alone what visualizations exist or what their names are. They
-must open each `viz/` module to find out. This is the standard tradeoff of
-registry-based dispatch.
+Each `viz.*` module calls `registry.register(name, fn)` on import. The
+`chapter_renderer` later resolves `:visualize name` directives against this
+registry. This pattern keeps each visualization self-contained; `book.py`
+only needs to ensure the modules are loaded.
 
 ---
 
-## Pointing at the Content File
+## Parsing the Book into Dialogs
 
-The book's prose lives outside the `src/` tree:
+The book is one markdown file with `---` separating sections. `parse_dialogs`
+splits it and filters for sections that begin with `## `:
 
 ```python
-BOOK_FILE = Path(__file__).parent.parent / "content" / "book_dialog.md"
+def parse_dialogs(text: str) -> list[tuple[str, str]]:
+    sections = re.split(r"\n---\n", text)
+    dialogs = []
+    for i, section in enumerate(sections, start=1):
+        section = section.strip()
+        if not section.startswith("## "):
+            continue
+        title = section.splitlines()[0][3:].strip()
+        dialogs.append((f"Dialog {i}: {title}", section))
+    return dialogs
 ```
 
-`Path(__file__).parent.parent` walks up one level from `src/` to the project
-root, then descends into `content/`. This keeps source code and content
-cleanly separated in the repository. It also means the content file can be
-edited — even by non-programmers — without touching any Python.
+The `if not section.startswith("## ")` guard silently drops end-of-file
+markers and blank separators, so the content author can use `---` freely
+without breaking the parser.
+
+---
+
+## Prev/Next Navigation
+
+Each dialog tab (except the first) has a "← Previous" button at the top, and
+each (except the last) has a "Next →" button at the bottom. The button logic
+uses Streamlit session state plus a JS injection to switch tabs:
+
+```python
+def render_nav_button(target_label: str, button_text: str, key: str) -> None:
+    nav_key = f"{key}_target"
+    if st.session_state.get(nav_key):
+        del st.session_state[nav_key]
+        safe_label = target_label.replace('"', '\\"')
+        js = NAV_JS.replace("NAV_TARGET_LABEL", f'"{safe_label}"')
+        components.html(f"<script>{js}</script>", height=0)
+    if st.button(button_text, key=key):
+        st.session_state[nav_key] = True
+        st.rerun()
+```
+
+The two-phase pattern is necessary because `components.html` runs in the
+browser but `st.button` triggers a Python rerun. On click: set a flag and
+rerun. On the next rerun: detect the flag, inject the JS that clicks the
+tab, clear the flag. The JS itself lives in `nav_button.js`:
+
+```javascript
+const tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+for (const t of tabs) {
+    if (t.textContent.trim() === NAV_TARGET_LABEL) { t.click(); break; }
+}
+```
+
+`NAV_TARGET_LABEL` is replaced by Python with the actual label string before
+injection, keeping all JavaScript out of Python source files.
 
 ---
 
 ## The main() Function
 
-The application entry point is compact by design:
-
 ```python
 def main():
-    st.set_page_config(page_title="quant2", layout="centered")
-    st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
-    render_chapter(BOOK_FILE)
+    st.set_page_config(page_title="The Quantum Computing Dialogs", layout="centered")
+    st.markdown(f"<style>{CSS}</style>", unsafe_allow_html=True)
+    st.title("The Quantum Computing Dialogs")
+
+    text = BOOK_FILE.read_text()
+    dialogs = parse_dialogs(text)
+    tab_labels = [label for label, _ in dialogs]
+    tabs = st.tabs(tab_labels)
+
+    viz_counter = [0]
+    for i, (tab, (_, content)) in enumerate(zip(tabs, dialogs)):
+        with tab:
+            if i > 0:
+                render_nav_button(
+                    tab_labels[i - 1], f"← {tab_labels[i - 1]}", key=f"nav_prev_{i}"
+                )
+            render_chapter_text(content, viz_counter)
+            if i < len(dialogs) - 1:
+                render_nav_button(
+                    tab_labels[i + 1], f"{tab_labels[i + 1]} →", key=f"nav_next_{i}"
+                )
 ```
 
-`st.set_page_config` must be the first Streamlit call in any session;
-Streamlit enforces this. The `layout="centered"` choice constrains content
-width, which is appropriate for a reading experience — wide layouts suit
-dashboards, not text.
-
-The CSS is injected via `st.markdown` with `unsafe_allow_html=True`. This is
-the standard Streamlit idiom for applying global styles. There is no safer
-alternative in the current Streamlit API for injecting a stylesheet; the risk
-is low because the CSS content comes from a file in the project, not from user
-input.
-
-`render_chapter(BOOK_FILE)` hands control to `chapter_renderer.py`, which
-reads the markdown file, splits it into paragraph-sized blocks, and dispatches
-each block to either `st.markdown` (for prose) or the visualization registry
-(for `:visualize` directives).
-
----
-
-## The Invocation Pattern
-
-The file ends with a bare call rather than the conventional guard:
-
-```python
-main()
-```
-
-This is intentional. Streamlit re-executes the entire script on each user
-interaction. The `if __name__ == "__main__":` guard is meaningless in that
-context — Streamlit always runs the script as a module, not as `__main__` in
-the traditional sense. Calling `main()` unconditionally is clearer and
-functionally equivalent.
+`viz_counter` is a single-element list — a mutable container passed by
+reference so `render_chapter_text` can increment a shared counter across all
+tabs without global state. Each `:visualize` directive gets a unique key
+derived from this counter, preventing Streamlit widget key collisions.
 
 ---
 
 ## Observations on Improvement
 
-**Registration brittleness.** The eleven explicit `import viz.*` lines must be
-kept in sync with the set of modules in `viz/`. Adding a new visualization
-requires editing `book.py` as well as creating the module. A more robust
-approach would be to auto-discover all modules in `viz/` at startup — for
-example, by iterating `Path(__file__).parent.glob("viz/*.py")` and importing
-them programmatically. This would make adding a visualization a single-file
-operation.
+**Auto-discovery of viz modules.** The eleven explicit `import viz.*` lines
+must be kept in sync with the `viz/` directory by hand. Scanning
+`Path(__file__).parent.glob("viz/*.py")` and importing programmatically would
+make adding a new visualization a single-file operation.
 
-**Side-effecting imports are fragile.** The import-for-side-effect pattern
-works, but it violates the principle that imports should not have behavioral
-consequences. An alternative is to have each module expose a `register()`
-function that `book.py` calls explicitly. This makes the registration
-relationship visible in the calling code rather than hidden inside the imported
-module.
+**NAV_JS label injection is fragile.** Replacing `NAV_TARGET_LABEL` as a bare
+string works, but would fail if the placeholder string appeared elsewhere in
+the JS. A structured template (e.g., using `string.Template`) would be more
+robust.
 
-**CSS fail-fast vs. graceful degradation.** Reading `_CSS` at import time
-means a missing stylesheet crashes the app before any page renders. A
-try/except around the read, falling back to an empty string with a logged
-warning, would allow the app to function (albeit unstyled) even if the CSS
-file is absent. Whether that is preferable depends on deployment discipline.
+**Book file is hardcoded.** `BOOK_FILE` is a fixed path. If the project
+grows to multiple books or configurable content paths, this will need to
+become a parameter or config value.
 
-**Single book file.** `BOOK_FILE` is hardcoded to one path. The
-`chapter_renderer` module already provides a `render_book(paths)` function that
-accepts a list of chapter files. If the book grows, `book.py` will need to be
-updated to pass multiple files. Externalizing the chapter list to a config file
-or a directory scan would make that transition easier.
-
-**No error handling around `render_chapter`.** If `BOOK_FILE` does not exist,
-the app raises an unhandled `FileNotFoundError`. A brief try/except with a
-`st.error(...)` message would produce a more informative failure for a user
-encountering a misconfigured deployment.
+**No error handling on missing content file.** If `BOOK_FILE` is absent the
+app raises an unhandled `FileNotFoundError`. A `st.error()` with a clear
+message would be more useful in a deployed environment.

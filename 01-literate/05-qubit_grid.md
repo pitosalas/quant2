@@ -1,6 +1,6 @@
 ---
-version: "2.1"
-generated: "2026-06-11"
+version: "2.2"
+generated: "2026-06-21"
 ---
 
 # qubit_grid — Animated Qubit Measurement Grid
@@ -25,10 +25,10 @@ content/images/qbit.svg — Qubit icon (orbital/atom glyph)
 Python loads assets at import time using `Path(__file__).parent`:
 
 ```python
-_HERE = Path(__file__).parent
-_CSS = (_HERE / "qubit_grid.css").read_text()
-_TEMPLATE = (_HERE / "qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../content/images/qbit.svg").resolve().read_text()
+HERE = Path(__file__).parent
+CSS = (HERE / "qubit_grid.css").read_text()
+TEMPLATE = (HERE / "qubit_grid.html").read_text()
+SVG_ICON = (HERE / "../../content/images/qubit.svg").resolve().read_text()
 ```
 
 The SVG icon path resolves to `content/images/qbit.svg` relative to the repo root. This keeps the icon alongside other content assets rather than buried inside `src/viz/`. The `resolve()` call normalises the `../../` traversal to an absolute path at import time, catching missing-file errors immediately rather than at render time.
@@ -58,7 +58,7 @@ Each cell is built by `build_cell_html()`:
 def build_cell_html(idx: int, outcome: int | None) -> str:
     color = COLORS[outcome] if outcome is not None else COLORS["unmeasured"]
     label = LABELS[outcome]
-    svg = _SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
+    svg = SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
     return (
         f'<div class="qg-cell">'
         f'<div class="qg-label">experiment #{idx + 1}</div>'
@@ -77,7 +77,7 @@ The SVG size override (`1em` → `2em`) is applied inline because the icon file 
 ```python
 def build_grid_html(results: list[int | None], n: int) -> str:
     cells = "".join(build_cell_html(i, results[i]) for i in range(n))
-    return _TEMPLATE.format(css=_CSS, cols=COLS, cells=cells)
+    return TEMPLATE.format(css=CSS, cols=COLS, cells=cells)
 ```
 
 `render()` drives the animation via a single Streamlit placeholder that is rewritten each frame:
