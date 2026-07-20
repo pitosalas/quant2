@@ -36,7 +36,7 @@ def parse_dialogs(text: str) -> list[tuple[str, str]]:
 
     Filters out non-section content (end-of-dialogue marker, etc.).
     """
-    sections = re.split(r"\n---\n", text)
+    sections 2= re.split(r"\n---\n", text)
     dialogs = []
     for i, section in enumerate(sections, start=1):
         section = section.strip()
