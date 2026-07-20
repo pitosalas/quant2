@@ -1,6 +1,6 @@
 ---
-version: "1.1"
-generated: "2026-06-21"
+version: "1.2"
+generated: "2026-07-20"
 ---
 
 # two_qubit_grid.py — Animated Two-Qubit Measurement Grid
@@ -35,8 +35,8 @@ The SVG icon is loaded from `content/images/qbit.svg` relative to the repo
 root — the same shared asset used by `qubit_grid.py`. The `resolve()` call
 normalises the traversal path at import time.
 
-Per `codereview.md`: no inline CSS or HTML strings in Python — they live in
-separate asset files.
+Per the project style guide: no inline CSS or HTML strings in Python — they
+live in separate asset files.
 
 ## Cell Construction
 
@@ -96,7 +96,57 @@ def render(args: list[str], placeholder=None) -> None:
 ```
 
 One trial at a time, the full grid HTML is rebuilt and pushed to the same
-Streamlit placeholder. The 300ms delay makes the evolution visible.
+Streamlit placeholder. The 300ms delay makes the evolution visible. This
+blocking version is a fallback, used directly in tests; the live app
+instead drives a step-based twin, `animate_two_qubit_grid`, one frame per
+Streamlit fragment rerun so the page stays responsive during the animation
+— the same non-blocking pattern `qubit_grid.py` uses for single qubits:
+
+```python
+def animate_two_qubit_grid(
+    run_fn: Callable, args: list[str], step: int, key: str, placeholder
+) -> bool:
+    n = int(args[0]) if args else 16
+    results_key = f"{key}_results"
+
+    if step == 0:
+        st.session_state[results_key] = [None] * n
+    results = st.session_state.get(results_key, [None] * n)
+
+    cell = step // 2
+    frame = step % 2
+    if frame == 0:
+        html = build_two_qubit_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
+        return False
+
+    single = run_fn()
+    results[cell] = next(k for k, v in single.items() if v > 0)
+    st.session_state[results_key] = results
+    html = build_two_qubit_grid_html(results[:cell + 1], cell + 1)
+    placeholder.markdown(html, unsafe_allow_html=True)
+
+    if cell + 1 >= n:
+        st.session_state.pop(results_key, None)
+        return True
+    return False
+```
+
+`entangled_grid.py`, `anticorrelated_grid.py`, and `asymmetric_grid.py` all
+call this same function with different `run_fn`s (different gate sequences
+producing correlated, anti-correlated, or asymmetric joint outcomes) — the
+animation and rendering logic is written once here.
+
+An earlier version of this function checked `cell >= n` and returned `True`
+in a guard clause *before* drawing anything — so completion was reported on
+a trailing call, one frame after the one that drew the final result, and
+that trailing call drew nothing. Since a Streamlit fragment rerun replaces
+its entire prior output, the blank trailing call erased the last frame the
+user had just watched land. The fix — folding the `cell + 1 >= n` check
+into the branch that just finished drawing that final frame — ensures
+"done" is only ever reported on a call that also rendered something. See
+`05-qubit_grid.md` for the fuller writeup; the bug and the fix are
+structurally identical here.
 
 ## Shared Grid Builder
 

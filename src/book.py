@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import streamlit as st
 
 CSS = (Path(__file__).parent / "styles" / "main.css").read_text()
+SCROLL_TOP_JS = (Path(__file__).parent / "styles" / "scroll_top.js").read_text()
 
 import viz.single_qubit_anim  # noqa: F401
 import viz.qubit_grid  # noqa: F401
@@ -115,16 +116,7 @@ def main():
     pending = st.session_state.pop(PENDING_CHAPTER_KEY, None)
     if pending is not None:
         st.session_state[CHAPTER_SELECT_KEY] = pending
-        scroll_js = """
-        <script>
-        var doc = window.parent.document;
-        var el = doc.querySelector('[data-testid="stMain"]')
-            || doc.querySelector('[data-testid="stAppViewContainer"]');
-        if (el) { el.scrollTo(0, 0); }
-        window.parent.scrollTo(0, 0);
-        </script>
-        """
-        st.iframe(scroll_js, height=1)
+        st.iframe(f"<script>{SCROLL_TOP_JS}</script>", height=1)
 
     selected_label = st.selectbox(
         "Chapter",

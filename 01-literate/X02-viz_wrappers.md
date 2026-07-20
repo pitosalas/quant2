@@ -1,6 +1,6 @@
 ---
-version: "1.0"
-generated: "2026-06-21"
+version: "1.1"
+generated: "2026-07-20"
 ---
 
 # Visualization Wrappers — entangled_grid, anticorrelated_grid, asymmetric_grid, x_gate_grid
@@ -39,6 +39,35 @@ registry.register("entangled-grid", render)
 | `anticorrelated_grid.py` | `"anticorrelated-grid"` | `run_trials_anticorrelated(1)` | Bell state Ψ+: 01 or 10, anti-correlated |
 | `asymmetric_grid.py` | `"asymmetric-grid"` | `run_trials_asymmetric(π/3, 1)` | Biased: 00 ~75%, 11 ~25% |
 | `x_gate_grid.py` | `"x-gate-grid"` | `Qubit.zero().apply(X).measure()` | Deterministic: always 1 |
+
+## x_gate_grid Is the Odd One Out
+
+`x_gate_grid.py` is grouped here for its brevity, not because it shares the
+other three's exact shape. It's single-qubit (uses `build_grid_html` from
+`qubit_grid.py`, not `build_two_qubit_grid_html`), and its live, non-blocking
+animation — `render_step_x_gate`, driven by `chapter_renderer`'s per-frame
+fragment reruns — has *three* frames per cell instead of two: pending (`?`),
+then the deterministic initial `0`, then the result of applying the X gate.
+
+That extra frame is also where this module had the same completion bug as
+`qubit_grid.py`'s and `two_qubit_grid.py`'s step functions: `done=True` was
+originally reported on a trailing call, one frame after the one that drew
+the final X-gate result, and that trailing call drew nothing — erasing the
+last frame on completion. The fix mirrors the other two: fold the
+"all cells done" check into the same branch that draws the final frame,
+so completion is never reported by a call that renders nothing:
+
+```python
+    results[cell] = Qubit.zero().apply(X).measure()
+    st.session_state[results_key] = results
+    html = build_grid_html(results[:cell + 1], cell + 1)
+    placeholder.markdown(html, unsafe_allow_html=True)
+
+    if cell + 1 >= n:
+        st.session_state.pop(results_key, None)
+        return True
+    return False
+```
 
 ## Why These Are Separate Modules
 

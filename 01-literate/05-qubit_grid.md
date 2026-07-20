@@ -1,6 +1,6 @@
 ---
-version: "2.2"
-generated: "2026-06-21"
+version: "2.3"
+generated: "2026-07-20"
 ---
 
 # qubit_grid — Animated Qubit Measurement Grid
@@ -70,17 +70,32 @@ def build_cell_html(idx: int, outcome: int | None) -> str:
 
 The SVG size override (`1em` → `2em`) is applied inline because the icon file stores its canonical display size and the grid needs it larger. A future improvement would parameterize this in the CSS instead.
 
-## Grid Assembly and Animation
+## Grid Assembly
 
-`build_grid_html()` assembles cells into the CSS grid template:
+`build_grid_html()` assembles final (measured) cells; `build_pending_grid_html()`
+does the same but renders any still-`None` cell as a pulsing yellow `?`
+(via `build_pending_cell_html`, colored with `PENDING_COLOR = "#ccaa00"`):
 
 ```python
 def build_grid_html(results: list[int | None], n: int) -> str:
     cells = "".join(build_cell_html(i, results[i]) for i in range(n))
     return TEMPLATE.format(css=CSS, cols=COLS, cells=cells)
+
+
+def build_pending_grid_html(results: list[int | None], n: int) -> str:
+    cells = "".join(
+        build_pending_cell_html(i)
+        if results[i] is None
+        else build_cell_html(i, results[i])
+        for i in range(n)
+    )
+    return TEMPLATE.format(css=CSS, cols=COLS, cells=cells)
 ```
 
-`render()` drives the animation via a single Streamlit placeholder that is rewritten each frame:
+## Two Animation Paths: Blocking vs. Step-Driven
+
+`render()` is the simple, blocking version — used as a fallback and directly
+in tests. It owns its own loop and its own `time.sleep`:
 
 ```python
 def render(args: list[str], placeholder=None) -> None:
@@ -89,32 +104,102 @@ def render(args: list[str], placeholder=None) -> None:
     if placeholder is None:
         placeholder = st.empty()
     for i in range(n):
+        html = build_pending_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
+        time.sleep(0.33)
         results[i] = Qubit.zero().apply(H).measure()
-        placeholder.markdown(build_grid_html(results, n), unsafe_allow_html=True)
-        time.sleep(0.07)
+        html = build_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
+        time.sleep(0.33)
 ```
 
-`st.empty()` is key: replacing its content rerenders only that region, not the whole page. The 70ms sleep is fast enough to feel animated but slow enough for the eye to follow individual outcomes.
+But the live app never actually calls `render()` for the animated path —
+`chapter_renderer.make_viz_fragment` drives a *step-based* variant instead,
+one Streamlit fragment rerun per frame, so the "▶ Run Experiment" button
+stays responsive instead of blocking the whole page for the animation's
+duration. `animate_single_qubit_grid` is the step function, shared by both
+`qubit_grid.py` and `zero_qubit_grid.py`:
+
+```python
+def animate_single_qubit_grid(
+    measure_fn: Callable, args: list[str], step: int, key: str, placeholder
+) -> bool:
+    n = int(args[0]) if args else 16
+    results_key = f"{key}_results"
+
+    if step == 0:
+        st.session_state[results_key] = [None] * n
+    results = st.session_state.get(results_key, [None] * n)
+
+    cell = step // 2
+    frame = step % 2
+    if frame == 0:
+        html = build_pending_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
+        return False
+
+    results[cell] = measure_fn()
+    st.session_state[results_key] = results
+    html = build_grid_html(results[:cell + 1], cell + 1)
+    placeholder.markdown(html, unsafe_allow_html=True)
+
+    if cell + 1 >= n:
+        st.session_state.pop(results_key, None)
+        return True
+    return False
+```
+
+Two frames per cell (`?` pending, then the measured result), state carried
+across fragment reruns in `st.session_state` since the function itself is
+stateless between calls — `key` scopes that state per visualization
+instance, so multiple grids on the same page don't collide.
+
+### A Bug in the Completion Frame
+
+An earlier version checked `cell >= n` in a guard clause *before* drawing
+anything, and returned `True` there — meaning "done" was only reported on
+an extra, trailing call that came *after* the one that drew the final
+cell's result. Streamlit fragments replace their entire rendered output on
+every rerun, so that trailing call — which drew nothing into a freshly
+created placeholder — blanked out the last frame the user had just watched
+finish. The fix folds the completion check into the same branch that draws
+the final frame, so "done" is only ever reported on a call that also drew
+something:
+
+```python
+    if cell + 1 >= n:
+        st.session_state.pop(results_key, None)
+        return True
+    return False
+```
+
+The general lesson: in a step machine driven by "call again until done",
+the call that reports completion must be the *same* call that produces the
+final visible state — never a follow-up call whose only job is to say "stop
+calling me," because whatever renders (or fails to render) on that call is
+what the user is left looking at.
 
 ## Data Flow
 
 ```mermaid
 graph TD
-    A[render called] --> B[allocate results: all None]
-    B --> C[st.empty placeholder]
-    C --> D{for each qubit i}
-    D --> E[Qubit.zero apply H measure]
-    E --> F[results i = 0 or 1]
-    F --> G[build_grid_html]
-    G --> H[build_cell_html per cell]
-    H --> I[placeholder.markdown]
-    I --> J[sleep 70ms]
-    J --> D
+    A[Run Experiment clicked] --> B[step = 0]
+    B --> C[st.fragment rerun]
+    C --> D{frame = step % 2}
+    D -->|0: pending| E[build_pending_grid_html]
+    D -->|1: result| F[measure_fn + build_grid_html]
+    E --> G[placeholder.markdown]
+    F --> G
+    G --> H{cell+1 >= n and frame==1?}
+    H -->|no| I[sleep 0.33s, step += 1]
+    I --> C
+    H -->|yes| J[done — final frame stays on screen]
 ```
 
 ## Possible Improvements
 
 - **SVG size via CSS**: The `width="2em"` override is a string replacement hack. A cleaner approach is a CSS class that overrides the SVG's intrinsic size.
 - **Configurable columns**: `COLS = 8` is hardcoded. An `args` parameter would let chapter authors control layout.
-- **Speed control**: The 70ms sleep is hardcoded. Exposing it via `args` would allow slower demos or instant batch display.
+- **Speed control**: The 0.33s per-frame sleep is hardcoded (in `render()` and, effectively, in `chapter_renderer`'s fragment loop). Exposing it via `args` would allow slower demos or instant batch display.
+- **Completion-state test coverage**: the fix to `animate_single_qubit_grid`'s final-frame bug is now covered by a regression test, but the pattern is duplicated across three files (`qubit_grid.py`, `two_qubit_grid.py`, `x_gate_grid.py`). A shared step-machine helper (draw-then-check-done) could eliminate the duplication and the class of bug at once.
 - **Shared color palette**: Colors are defined in Python and duplicated risk in CSS. CSS variables in `qubit_grid.css` could be the single source of truth.
