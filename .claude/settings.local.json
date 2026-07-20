@@ -37,7 +37,9 @@
       "Bash(git pull:*)",
       "Bash(git stash:*)",
       "Bash(git *)",
-      "Bash(python -c \"import sys; sys.path.insert\\(0, 'src'\\); import viz.zero_qubit_grid\")"
+      "Bash(python -c \"import sys; sys.path.insert\\(0, 'src'\\); import viz.zero_qubit_grid\")",
+      "Bash(python -m pytest:*)",
+      "Bash(git -C /Users/pitosalas/mydev/quant2 diff --name-only HEAD)"
     ]
   }
 }

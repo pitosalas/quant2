@@ -20,7 +20,9 @@ def draw_histogram(counts: dict[int, int], label: str = "") -> matplotlib.figure
     colors = [palette[i % len(palette)] for i in range(len(labels))]
 
     fig, ax = plt.subplots(figsize=(5, 3.5))
-    bars = ax.bar(labels, values, color=colors, edgecolor="white", linewidth=1.5, width=0.5)
+    bars = ax.bar(
+        labels, values, color=colors, edgecolor="white", linewidth=1.5, width=0.5
+    )
 
     for bar, val in zip(bars, values):
         ax.text(

@@ -1,6 +1,6 @@
 ---
 version: "1.0"
-generated: "2026-06-15"
+generated: "2026-06-21"
 ---
 
 # zero_qubit_grid.py — Fresh Qubit Always Collapses to Zero
@@ -40,7 +40,7 @@ def build_legend_html() -> str:
         + build_legend_cell_html(COLORS[0], "0", "measured: 0")
         + build_legend_cell_html(COLORS[1], "1", "measured: 1")
     )
-    return _LEGEND_TEMPLATE.format(css=_CSS, cells=cells)
+    return LEGEND_TEMPLATE.format(css=CSS, cells=cells)
 ```
 
 The legend uses `zero_qubit_legend.html` — a separate template that

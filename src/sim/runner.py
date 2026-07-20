@@ -10,7 +10,10 @@ from quant2.gates import H_I, CNOT, I_X, Ry_I
 
 
 def run_trials(gate_sequence: list, n: int) -> dict[int, int]:
-    """Apply gate_sequence to |0⟩ n times, measure each time. Returns {0: count, 1: count}."""
+    """Apply gate_sequence to |0⟩ n times, measure each time.
+
+    Returns {0: count, 1: count}.
+    """
     if n <= 0:
         raise ValueError(f"n must be > 0, got {n}")
 
@@ -24,7 +27,10 @@ def run_trials(gate_sequence: list, n: int) -> dict[int, int]:
 
 
 def run_trials_2qubit(gates0: list, gates1: list, n: int) -> dict[str, int]:
-    """Apply gate sequences to two independent |0⟩ qubits n times. Returns {\"00\":c,...}."""
+    """Apply gate sequences to two independent |0⟩ qubits n times.
+
+    Returns {"00":c,...}.
+    """
     if n <= 0:
         raise ValueError(f"n must be > 0, got {n}")
 

@@ -3,14 +3,19 @@
 # Author: Pito Salas and Claude Code
 # Open Source Under MIT license
 
+import logging
+
 from quant2.qubit import Qubit
 from quant2.gates import X, H, Z
 from sim.runner import run_trials
 from viz.bloch import demo_dashboard
 
+logger = logging.getLogger(__name__)
+
 
 def main():
-    print("=== quant2: Single Qubit Demo ===\n")
+    logging.basicConfig(level=logging.INFO)
+    logger.info("=== quant2: Single Qubit Demo ===")
 
     experiments = [
         ("H gate\n|0⟩ → superposition", [H]),
@@ -27,7 +32,7 @@ def main():
             q = q.apply(g)
         results.append((label, counts, q))
 
-    print("\nLaunching visualizations...")
+    logger.info("Launching visualizations...")
     demo_dashboard(results)
 
 

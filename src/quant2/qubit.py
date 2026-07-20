@@ -47,7 +47,12 @@ class Qubit:
 
     def measure(self) -> int:
         probs = np.array([self.prob_zero, self.prob_one])
-        probs = probs / probs.sum()  # renormalize to prevent float drift crashing np.random.choice
+        total = float(probs.sum())
+        if not np.isclose(total, 1.0, atol=1e-6):
+            raise ValueError(
+                f"State probabilities sum to {total:.8f}; possible state corruption"
+            )
+        probs = probs / total
         outcome = int(np.random.choice([0, 1], p=probs))
         self.vec = np.array([1.0, 0.0] if outcome == 0 else [0.0, 1.0], dtype=complex)
         return outcome

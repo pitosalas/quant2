@@ -19,7 +19,9 @@ def draw_superposition() -> matplotlib.figure.Figure:
     amplitudes = [AMPLITUDE] * N
 
     fig, ax = plt.subplots(figsize=(8, 3.5))
-    ax.bar(labels, amplitudes, color="#2266cc", edgecolor="white", linewidth=1, width=0.7)
+    ax.bar(
+        labels, amplitudes, color="#2266cc", edgecolor="white", linewidth=1, width=0.7
+    )
 
     ax.set_ylim(0, 0.5)
     ax.set_ylabel("Amplitude", fontsize=11)

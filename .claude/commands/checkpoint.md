@@ -1,3 +1,6 @@
+---
+description: Run tests, update docs, commit and push
+---
 Run a full checkpoint in this order:
 
 - Run all tests unless ROS2 is not installed

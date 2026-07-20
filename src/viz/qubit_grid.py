@@ -4,6 +4,7 @@
 # Open Source Under MIT license
 
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 import streamlit as st
@@ -26,10 +27,10 @@ LABELS = {
 PENDING_COLOR = "#ccaa00"
 COLS = 8
 
-_HERE = Path(__file__).parent
-_CSS = (_HERE / "qubit_grid.css").read_text()
-_TEMPLATE = (_HERE / "qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../content/images/qubit.svg").resolve().read_text()
+HERE = Path(__file__).parent
+CSS = (HERE / "qubit_grid.css").read_text()
+TEMPLATE = (HERE / "qubit_grid.html").read_text()
+SVG_ICON = (HERE / "../../content/images/qubit.svg").resolve().read_text()
 
 
 def build_cell_html(idx: int, outcome: int | None) -> str:
@@ -42,7 +43,7 @@ def build_cell_html(idx: int, outcome: int | None) -> str:
             f'</div>'
         )
     color = COLORS[outcome]
-    svg = _SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
+    svg = SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
     return (
         f'<div class="qg-cell">'
         f'<div class="qg-label">experiment #{idx + 1}</div>'
@@ -53,7 +54,7 @@ def build_cell_html(idx: int, outcome: int | None) -> str:
 
 
 def build_pending_cell_html(idx: int) -> str:
-    svg = _SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
+    svg = SVG_ICON.replace('width="1em" height="1em"', 'width="2em" height="2em"')
     return (
         f'<div class="qg-cell">'
         f'<div class="qg-label">experiment #{idx + 1}</div>'
@@ -65,19 +66,23 @@ def build_pending_cell_html(idx: int) -> str:
 
 def build_grid_html(results: list[int | None], n: int) -> str:
     cells = "".join(build_cell_html(i, results[i]) for i in range(n))
-    return _TEMPLATE.format(css=_CSS, cols=COLS, cells=cells)
+    return TEMPLATE.format(css=CSS, cols=COLS, cells=cells)
 
 
 def build_pending_grid_html(results: list[int | None], n: int) -> str:
     """Like build_grid_html but renders None cells as yellow '?' instead of empty."""
     cells = "".join(
-        build_pending_cell_html(i) if results[i] is None else build_cell_html(i, results[i])
+        build_pending_cell_html(i)
+        if results[i] is None
+        else build_cell_html(i, results[i])
         for i in range(n)
     )
-    return _TEMPLATE.format(css=_CSS, cols=COLS, cells=cells)
+    return TEMPLATE.format(css=CSS, cols=COLS, cells=cells)
 
 
-def animate_single_qubit_grid(measure_fn: callable, args: list[str], step: int, key: str, placeholder) -> bool:
+def animate_single_qubit_grid(
+    measure_fn: Callable, args: list[str], step: int, key: str, placeholder
+) -> bool:
     """Shared step renderer for single-qubit grids. 2 frames/cell: ? then result.
 
     Returns True when all n cells are complete.
@@ -96,17 +101,21 @@ def animate_single_qubit_grid(measure_fn: callable, args: list[str], step: int, 
 
     frame = step % 2
     if frame == 0:
-        placeholder.markdown(build_pending_grid_html(results[:cell + 1], cell + 1), unsafe_allow_html=True)
+        html = build_pending_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
     else:
         results[cell] = measure_fn()
         st.session_state[results_key] = results
-        placeholder.markdown(build_grid_html(results[:cell + 1], cell + 1), unsafe_allow_html=True)
+        html = build_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
 
     return False
 
 
 def render_step_qubit_grid(args: list[str], step: int, key: str, placeholder) -> bool:
-    return animate_single_qubit_grid(lambda: Qubit.zero().apply(H).measure(), args, step, key, placeholder)
+    return animate_single_qubit_grid(
+        lambda: Qubit.zero().apply(H).measure(), args, step, key, placeholder
+    )
 
 
 def render(args: list[str], placeholder=None) -> None:
@@ -117,10 +126,12 @@ def render(args: list[str], placeholder=None) -> None:
         placeholder = st.empty()
 
     for i in range(n):
-        placeholder.markdown(build_pending_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_pending_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
         results[i] = Qubit.zero().apply(H).measure()
-        placeholder.markdown(build_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
 
 

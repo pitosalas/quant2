@@ -44,7 +44,8 @@ def plot_bloch_sphere(qubit, title: str = "Bloch Sphere", ax=None, show: bool = 
     ax.set_zlim(-1.2, 1.2)
     ax.set_box_aspect([1, 1, 1])
     ax.axis("off")
-    ax.set_title(f"{title}\nθ={np.degrees(theta):.1f}°  φ={np.degrees(phi):.1f}°", fontsize=10)
+    title_str = f"{title}\nθ={np.degrees(theta):.1f}°  φ={np.degrees(phi):.1f}°"
+    ax.set_title(title_str, fontsize=10)
 
     if standalone and show:
         plt.tight_layout()
@@ -69,7 +70,9 @@ def plot_measurement_distribution(
     palette = ["#4477cc", "#cc4444", "#44aa44", "#cc8800"]
     colors = [palette[i % len(palette)] for i in range(len(labels))]
 
-    bars = ax.bar(labels, values, color=colors, edgecolor="white", linewidth=1.5, width=0.5)
+    bars = ax.bar(
+        labels, values, color=colors, edgecolor="white", linewidth=1.5, width=0.5
+    )
 
     for bar, val in zip(bars, values):
         ax.text(
@@ -102,7 +105,9 @@ def demo_dashboard(gate_results: list[tuple[str, dict, object]]):
 
     n = len(gate_results)
     fig = plt.figure(figsize=(5 * n, 8))
-    fig.suptitle("quant2 — Single Qubit Experiments", fontsize=14, fontweight="bold", y=1.01)
+    fig.suptitle(
+        "quant2 — Single Qubit Experiments", fontsize=14, fontweight="bold", y=1.01
+    )
 
     for i, (label, counts, qubit) in enumerate(gate_results):
         ax_bloch = fig.add_subplot(2, n, i + 1, projection="3d")

@@ -1,6 +1,6 @@
 ---
 version: "1.1"
-generated: "2026-06-11"
+generated: "2026-06-21"
 ---
 
 # two_qubit_grid.py — Animated Two-Qubit Measurement Grid
@@ -25,10 +25,10 @@ experiment result arrives.
 Assets are loaded at module import time:
 
 ```python
-_HERE = Path(__file__).parent
-_CSS = (_HERE / "two_qubit_grid.css").read_text()
-_TEMPLATE = (_HERE / "two_qubit_grid.html").read_text()
-_SVG_ICON = (_HERE / "../../content/images/qbit.svg").resolve().read_text()
+HERE = Path(__file__).parent
+CSS =   (HERE / "two_qubit_grid.css").read_text()
+TEMPLATE =   (HERE / "two_qubit_grid.html").read_text()
+SVG_ICON =   (HERE / "../../content/images/qbit.svg").resolve().read_text()
 ```
 
 The SVG icon is loaded from `content/images/qbit.svg` relative to the repo
@@ -70,7 +70,7 @@ cell, resized to `1.5em`:
 
 ```python
 def bit_svg(bit: str | None) -> str:
-    sized = _SVG_ICON.replace('width="1em" height="1em"', 'width="1.5em" height="1.5em"')
+    sized = SVG_ICON.replace('width="1em" height="1em"', 'width="1.5em" height="1.5em"')
     color = COLORS[bit]
     return f'<span class="tqg-icon" style="color:{color};">{sized}</span>'
 ```

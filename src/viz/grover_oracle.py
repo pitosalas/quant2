@@ -27,7 +27,9 @@ def draw_oracle() -> matplotlib.figure.Figure:
     ax.set_ylim(-0.5, 0.5)
     ax.set_ylabel("Amplitude", fontsize=11)
     ax.set_xlabel("State (0–15)", fontsize=11)
-    ax.set_title("After Oracle: state 11 marked — amplitude flipped to negative", fontsize=10)
+    ax.set_title(
+        "After Oracle: state 11 marked — amplitude flipped to negative", fontsize=10
+    )
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.tick_params(labelsize=9)

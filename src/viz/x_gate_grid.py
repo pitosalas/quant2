@@ -29,15 +29,18 @@ def render_step_x_gate(args: list[str], step: int, key: str, placeholder) -> boo
 
     frame = step % 3
     if frame == 0:
-        placeholder.markdown(build_pending_grid_html(results[:cell + 1], cell + 1), unsafe_allow_html=True)
+        html = build_pending_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
     elif frame == 1:
         results[cell] = 0
         st.session_state[results_key] = results
-        placeholder.markdown(build_grid_html(results[:cell + 1], cell + 1), unsafe_allow_html=True)
+        html = build_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
     else:
         results[cell] = Qubit.zero().apply(X).measure()
         st.session_state[results_key] = results
-        placeholder.markdown(build_grid_html(results[:cell + 1], cell + 1), unsafe_allow_html=True)
+        html = build_grid_html(results[:cell + 1], cell + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
 
     return False
 
@@ -50,13 +53,16 @@ def render(args: list[str], placeholder=None) -> None:
         placeholder = st.empty()
 
     for i in range(n):
-        placeholder.markdown(build_pending_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_pending_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
         results[i] = 0
-        placeholder.markdown(build_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
         results[i] = Qubit.zero().apply(X).measure()
-        placeholder.markdown(build_grid_html(results[:i + 1], i + 1), unsafe_allow_html=True)
+        html = build_grid_html(results[:i + 1], i + 1)
+        placeholder.markdown(html, unsafe_allow_html=True)
         time.sleep(0.33)
 
 

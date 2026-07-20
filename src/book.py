@@ -12,7 +12,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 import streamlit as st
 import streamlit.components.v1 as components
 
-_CSS = (Path(__file__).parent / "styles" / "main.css").read_text()
+CSS = (Path(__file__).parent / "styles" / "main.css").read_text()
+NAV_JS = (Path(__file__).parent / "styles" / "nav_button.js").read_text()
 
 import viz.single_qubit_anim  # noqa: F401
 import viz.qubit_grid  # noqa: F401
@@ -53,15 +54,8 @@ def render_nav_button(target_label: str, button_text: str, key: str) -> None:
     if st.session_state.get(nav_key):
         del st.session_state[nav_key]
         safe_label = target_label.replace('"', '\\"')
-        components.html(
-            f"""<script>
-            const tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
-            for (const t of tabs) {{
-                if (t.textContent.trim() === "{safe_label}") {{ t.click(); break; }}
-            }}
-            </script>""",
-            height=0,
-        )
+        js = NAV_JS.replace("NAV_TARGET_LABEL", f'"{safe_label}"')
+        components.html(f"<script>{js}</script>", height=0)
     if st.button(button_text, key=key):
         st.session_state[nav_key] = True
         st.rerun()
@@ -69,7 +63,7 @@ def render_nav_button(target_label: str, button_text: str, key: str) -> None:
 
 def main():
     st.set_page_config(page_title="The Quantum Computing Dialogs", layout="centered")
-    st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
+    st.markdown(f"<style>{CSS}</style>", unsafe_allow_html=True)
     st.title("The Quantum Computing Dialogs")
 
     text = BOOK_FILE.read_text()
@@ -81,10 +75,14 @@ def main():
     for i, (tab, (_, content)) in enumerate(zip(tabs, dialogs)):
         with tab:
             if i > 0:
-                render_nav_button(tab_labels[i - 1], f"← {tab_labels[i - 1]}", key=f"nav_prev_{i}")
+                render_nav_button(
+                    tab_labels[i - 1], f"← {tab_labels[i - 1]}", key=f"nav_prev_{i}"
+                )
             render_chapter_text(content, viz_counter)
             if i < len(dialogs) - 1:
-                render_nav_button(tab_labels[i + 1], f"{tab_labels[i + 1]} →", key=f"nav_next_{i}")
+                render_nav_button(
+                    tab_labels[i + 1], f"{tab_labels[i + 1]} →", key=f"nav_next_{i}"
+                )
 
 
 main()

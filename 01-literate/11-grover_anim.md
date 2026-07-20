@@ -1,6 +1,6 @@
 ---
 version: "1.1"
-generated: "2026-06-11"
+generated: "2026-06-21"
 ---
 
 # grover_anim.py — Grover's Algorithm Amplitude Animation

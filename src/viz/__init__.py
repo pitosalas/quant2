@@ -6,4 +6,9 @@
 from viz.histogram import draw_histogram
 from viz.bloch import plot_bloch_sphere, plot_measurement_distribution, demo_dashboard
 
-__all__ = ["draw_histogram", "plot_bloch_sphere", "plot_measurement_distribution", "demo_dashboard"]
+__all__ = [
+    "draw_histogram",
+    "plot_bloch_sphere",
+    "plot_measurement_distribution",
+    "demo_dashboard",
+]

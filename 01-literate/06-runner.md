@@ -1,6 +1,6 @@
 ---
 version: "1.0"
-generated: "2026-06-10"
+generated: "2026-06-21"
 ---
 
 # runner.py — Multi-Trial Simulation Runner
