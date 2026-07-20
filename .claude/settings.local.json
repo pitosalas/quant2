@@ -39,7 +39,8 @@
       "Bash(git *)",
       "Bash(python -c \"import sys; sys.path.insert\\(0, 'src'\\); import viz.zero_qubit_grid\")",
       "Bash(python -m pytest:*)",
-      "Bash(git -C /Users/pitosalas/mydev/quant2 diff --name-only HEAD)"
+      "Bash(git -C /Users/pitosalas/mydev/quant2 diff --name-only HEAD)",
+      "Bash(xargs -I{} sh -c 'echo ==={}===; cat {}')"
     ]
   }
 }

@@ -6,16 +6,15 @@
 
 .qg-cell {
     text-align: center;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(128, 128, 128, 0.4);
     border-radius: 6px;
     padding: 6px 2px;
-    background: #fafafa;
+    background: rgba(128, 128, 128, 0.08);
 }
 
 .qg-label {
     font-size: 12px;
     font-weight: bold;
-    color: #333;
     line-height: 1.3;
 }
 

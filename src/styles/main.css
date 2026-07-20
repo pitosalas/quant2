@@ -2,9 +2,54 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Telex&display=swap');
 
+.stApp, [data-testid="stAppViewContainer"] {
+    background-color: #eeebe5 !important;
+    color: #2a2a2a !important;
+}
+
 .block-container {
     max-width: 800px;
     padding-top: 2rem;
+}
+
+[data-testid="stSelectbox"] {
+    max-width: 320px;
+}
+
+[data-testid="stSelectbox"] label {
+    font-size: 1.15rem !important;
+    color: #2a2a2a !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"],
+[data-testid="stSelectbox"] [data-baseweb="select"] div {
+    background-color: #ffd700 !important;
+    border-color: #ccaa00 !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] * {
+    color: #000 !important;
+    fill: #000 !important;
+}
+
+/* The open dropdown menu renders in a portal outside stSelectbox. */
+[data-baseweb="popover"],
+[data-baseweb="popover"] div,
+[data-baseweb="popover"] [role="listbox"],
+[data-baseweb="popover"] [role="option"] {
+    background-color: #ffd700 !important;
+}
+
+[data-baseweb="popover"] * {
+    color: #000 !important;
+    fill: #000 !important;
+}
+
+[data-baseweb="popover"] [role="option"]:hover,
+[data-baseweb="popover"] [role="option"]:hover * {
+    background-color: #333333 !important;
+    color: #fff !important;
+    fill: #fff !important;
 }
 
 .stMarkdown p, .stMarkdown li, .stMarkdown td, .stMarkdown th {
@@ -13,9 +58,13 @@
     line-height: 1.7;
 }
 
+.stMarkdown p {
+    border-top: 1px solid rgba(128, 128, 128, 0.4);
+    padding-top: 0.75rem;
+}
+
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
     font-family: 'Telex', sans-serif;
-    color: #1a1a2e;
 }
 
 .stButton > button {
@@ -29,6 +78,26 @@
 
 hr {
     border: none;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid rgba(111, 12, 12, 0.169);
     margin: 1.5rem 0;
+}
+
+.st-key-byline {
+    margin-top: -0.75rem;
+    margin-bottom: 1rem;
+}
+
+.st-key-byline .stButton > button {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    font: inherit !important;
+    font-size: 1rem !important;
+    color: inherit !important;
+    text-decoration: underline !important;
+}
+
+.st-key-byline .stButton > button:hover {
+    opacity: 0.7;
 }

@@ -23,25 +23,26 @@ def render_step_x_gate(args: list[str], step: int, key: str, placeholder) -> boo
     results = st.session_state.get(results_key, [None] * n)
 
     cell = step // 3
-    if cell >= n:
-        st.session_state.pop(results_key, None)
-        return True
-
     frame = step % 3
     if frame == 0:
         html = build_pending_grid_html(results[:cell + 1], cell + 1)
         placeholder.markdown(html, unsafe_allow_html=True)
-    elif frame == 1:
+        return False
+    if frame == 1:
         results[cell] = 0
         st.session_state[results_key] = results
         html = build_grid_html(results[:cell + 1], cell + 1)
         placeholder.markdown(html, unsafe_allow_html=True)
-    else:
-        results[cell] = Qubit.zero().apply(X).measure()
-        st.session_state[results_key] = results
-        html = build_grid_html(results[:cell + 1], cell + 1)
-        placeholder.markdown(html, unsafe_allow_html=True)
+        return False
 
+    results[cell] = Qubit.zero().apply(X).measure()
+    st.session_state[results_key] = results
+    html = build_grid_html(results[:cell + 1], cell + 1)
+    placeholder.markdown(html, unsafe_allow_html=True)
+
+    if cell + 1 >= n:
+        st.session_state.pop(results_key, None)
+        return True
     return False
 
 

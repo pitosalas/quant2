@@ -95,20 +95,20 @@ def animate_single_qubit_grid(
     results = st.session_state.get(results_key, [None] * n)
 
     cell = step // 2
-    if cell >= n:
-        st.session_state.pop(results_key, None)
-        return True
-
     frame = step % 2
     if frame == 0:
         html = build_pending_grid_html(results[:cell + 1], cell + 1)
         placeholder.markdown(html, unsafe_allow_html=True)
-    else:
-        results[cell] = measure_fn()
-        st.session_state[results_key] = results
-        html = build_grid_html(results[:cell + 1], cell + 1)
-        placeholder.markdown(html, unsafe_allow_html=True)
+        return False
 
+    results[cell] = measure_fn()
+    st.session_state[results_key] = results
+    html = build_grid_html(results[:cell + 1], cell + 1)
+    placeholder.markdown(html, unsafe_allow_html=True)
+
+    if cell + 1 >= n:
+        st.session_state.pop(results_key, None)
+        return True
     return False
 
 

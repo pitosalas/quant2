@@ -87,12 +87,19 @@ def test_visualize_with_no_args(tmp_path):
 
 
 def test_parse_dialogs_count_and_titles():
-    """parse_dialogs must return one entry per ## section, excluding end markers."""
+    """parse_dialogs must return one entry per ## section, excluding end markers.
+
+    The label is the heading text verbatim — no prefix added by the
+    function itself, so the heading is the single source of truth.
+    """
     import sys
     sys.path.insert(0, "src")
     from book import parse_dialogs
 
-    text = "## Alpha\n\ncontent\n\n---\n\n## Beta\n\ncontent\n\n---\n\n*End of dialogue*"
+    text = (
+        "## Dialog 1: Alpha\n\ncontent\n\n---\n\n"
+        "## Dialog 2: Beta\n\ncontent\n\n---\n\n*End of dialogue*"
+    )
     dialogs = parse_dialogs(text)
     assert len(dialogs) == 2
     assert dialogs[0][0] == "Dialog 1: Alpha"
@@ -109,6 +116,46 @@ def test_parse_dialogs_filters_non_sections():
     dialogs = parse_dialogs(text)
     assert len(dialogs) == 1
     assert "Real" in dialogs[0][0]
+
+
+def test_parse_dialogs_excludes_introduction():
+    """Introduction section is not a book chapter and is excluded entirely."""
+    import sys
+    sys.path.insert(0, "src")
+    from book import parse_dialogs
+
+    text = (
+        "## Introduction\n\ncontent\n\n---\n\n"
+        "## Dialog 1: Alpha\n\ncontent\n\n---\n\n"
+        "## Dialog 2: Beta\n\ncontent"
+    )
+    dialogs = parse_dialogs(text)
+    assert len(dialogs) == 2
+    assert dialogs[0][0] == "Dialog 1: Alpha"
+    assert dialogs[1][0] == "Dialog 2: Beta"
+
+
+def test_extract_introduction_present():
+    """extract_introduction returns the Introduction section's content."""
+    import sys
+    sys.path.insert(0, "src")
+    from book import extract_introduction
+
+    text = "## Introduction\n\nhello\n\n---\n\n## Alpha\n\ncontent"
+    intro = extract_introduction(text)
+    assert intro is not None
+    assert intro.startswith("## Introduction")
+    assert "hello" in intro
+
+
+def test_extract_introduction_absent():
+    """extract_introduction returns None when there is no Introduction section."""
+    import sys
+    sys.path.insert(0, "src")
+    from book import extract_introduction
+
+    text = "## Alpha\n\ncontent"
+    assert extract_introduction(text) is None
 
 
 def test_parse_dialogs_real_book():

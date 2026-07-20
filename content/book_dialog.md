@@ -1,4 +1,26 @@
-## Qubits
+## Introduction
+
+I'm Pito Salas, and I'm not a quantum computing expert — I'm learning this
+alongside you.
+
+This project started with a half-hour voice conversation with Claude on a
+long drive, asking it to explain quantum computing from scratch: what a
+qubit is, then one follow-up question after another. I got the transcript
+afterward, had Claude strip out the noise and keep the substance, then —
+remembering the dialogues of Plato — asked it to recast the whole thing as
+a Socratic conversation between Aristotle and Plato.
+
+From there it became an app: a book of chapters with runnable
+visualizations alongside the text, built by Claude Code under my direction.
+I hope it's accurate, but since I'm not the expert, don't be surprised if
+there are errors.
+
+The code is public on GitHub:
+[github.com/pitosalas/quant2](https://github.com/pitosalas/quant2)
+
+---
+
+## Dialog 1: Qubits
 
 **Aristotle:** Plato, I have been studying this doctrine of *quantum computing*, and *quantum bits* in particular. They call it a qubit. I confess I cannot reconcile it with anything in our natural philosophy.
 
@@ -53,7 +75,7 @@ The histogram converges on 50% for each outcome — showing the effect of the **
 
 ---
 
-## Quantum Gates
+## Dialog 2: Quantum Gates
 
 **Plato:** You have returned. Let us now turn from the nature of qubits to the gates that transform them.
 
@@ -118,7 +140,7 @@ Contrast this with the Hadamard grid above — the H gate set alpha and beta eac
 
 ---
 
-## Two-Qubit Registers
+## Dialog 3: Two-Qubit Registers
 
 **Aristotle:** Plato, I have been turning over what you said about gates. A single qubit, shaped by operations, collapsing at measurement — I follow all that. But must qubits always stand alone? What happens when two are brought together?
 
@@ -158,7 +180,7 @@ If we ran this same experiment, creating a quantum register with two qubits, man
 
 ---
 
-## Entangled Qubits
+## Dialog 4: Entangled Qubits
 
 **Plato:** We have seen what two independent qubits can do. Now for something stranger — a correlation that has no classical equivalent.
 
@@ -256,7 +278,7 @@ About 75% of cells show 00 (white), only 25% show 11 (purple). Yet 01 and 10 nev
 
 ---
 
-## Grover's Search Algorithm
+## Dialog 5: Grover's Search Algorithm
 
 **Plato:** We have laid the foundations — qubits, gates, entanglement. Let us now see what may be built upon them.
 
@@ -334,7 +356,7 @@ Notice: after the oracle, the orange bar flips below zero. After diffusion, it j
 
 ---
 
-## Limits and Realities
+## Dialog 6: Limits and Realities
 
 **Plato:** Every account of a powerful instrument must reckon honestly with its limits. Let us do so.
 
